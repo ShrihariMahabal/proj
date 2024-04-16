@@ -4,6 +4,8 @@ from flask_mysqldb import MySQL
 import MySQLdb.cursors
 import secrets
 
+# i am gay shri
+
 app = Flask(__name__)
 
 app.secret_key = 'sk'
