@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome</title>
+    <link href="{{url_for('static',filename='css/output.css')}}" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        {% include 'header.html' %}
+
+        <div class="mt-6 flex flex-col">
+            <div class="mb-3 mx-4 flex justify-between">
+                <h1 class="font-mont font-semibold text-[1.7rem]">Your Groups</h1>
+                <a href="{{url_for('create_group')}}" class="bg-accent rounded-full p-4 flex justify-center items-center absolute bottom-[5rem] right-5">
+                    <img src="static/plus.svg" alt="">
+                </a>
+            </div>
+            {% if not groups %}
+                <p class="text-textgray mx-4 text-center text-2xl">No groups yet !</p>
+            {% endif %}
+            {% for group in groups %}
+            <a href="{{url_for('group_page', gid=group.gid)}}" class="group-card">
+                <img class="h-[4rem] w-[4rem]" src="{{url_for('static',filename='icons8-purchase-order-96.png')}}" alt="">
+                <div class="flex flex-col space-y-2">
+                    <h1 class="font-medium font-roboto text-lg">{{group.group_name}}</h1>
+                    <p class="text-textgray text-base font-roboto">Total Spent: </p>
+                </div>
+            </a>
+            {% endfor %}
+            <div class="btn-container mt-2 flex justify-center space-x-2">
+                <a href="{{url_for('create_group')}}" class="btn-primary p-2">ADD GROUP</a>
+                <a href="{{url_for('join_group')}}" class="btn-secondary p-2">JOIN GROUP</a>
+            </div>
+        </div>
+
+        {% include 'nav.html' %}
+    </div>
+</body>
+
+</html>

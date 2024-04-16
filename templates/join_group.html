@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join Group</title>
+    <link href="{{url_for('static',filename='css/output.css')}}" rel="stylesheet">
+</head>
+<body>
+    <div class="container h-[100vh] flex justify-center items-center font-['Poppins',sans-serif]">
+        <div class="flex flex-col justify-between items-center bg-white rounded-xl px-5 py-8 shadow-2xl">
+            <h1 class="font-bold text-2xl mt-3 mb-5">Join Group</h1>
+            <form action="{{url_for('join_group')}}" method="post" class="flex flex-col w-[20rem]">
+                <label class="my-1" for="invite_code">Group Code</label>
+                <input class="text-black rounded-lg bg-slate-100 mb-4 pl-2 py-[1px] border-[1px] border-slate-500" type="text" id="invite_code" name="invite_code">
+                {% if error %}
+                    <p class="text-[red]">{{error}}</p>
+                {% endif %}
+                <button type="submit" class="btn-primary my-3">
+                    <p class="font-semibold">Join</p>
+                </button>
+                <a class="btn-secondary" href="{{url_for('home')}}">Cancel</a>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

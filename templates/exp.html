@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>exp</title>
+    <link href="{{url_for('static',filename='css/output.css')}}" rel="stylesheet">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/index.css')}}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="flex justify-between items-center">
+            <a href="{{url_for('group_page', gid=gid)}}">
+                <img class="h-[2.7rem] w-[2.7rem] m-2" src="{{url_for('static',filename='arrow-left.svg')}}" alt="">
+            </a>
+            <p class="text-2xl font-semibold font-mont">Expense</p>
+            <a class="text-2xl mr-3" href="">Edit</a>
+        </header>
+
+        <div class="flex flex-col space-y-2 justify-between items-start p-2 rounded-xl bg-white shadow-md m-6">
+            <p class="text-xl font-medium">{{expense.description}}</p>
+            <p class="text-xl">Rs.{{expense.amount}}</p>
+            <p class="text-xl">Paid by {{payer}}</p>
+        </div>
+
+    </div>
+</body>
+</html>

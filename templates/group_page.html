@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group Page</title>
+    <link href="{{url_for('static',filename='css/output.css')}}" rel="stylesheet">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/index.css')}}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <a href="{{url_for('home')}}">
+                <img class="h-[2.7rem] w-[2.7rem] m-2" src="{{url_for('static',filename='arrow-left.svg')}}" alt="">
+            </a>
+        </header>
+
+        <div class="grp-info-container flex justify-center">
+            <div class="grp-info flex space-x-6">
+                <img class="w-[8rem]" src="{{url_for('static',filename='icons8-group-96.png')}}" alt="">
+                <div class="flex flex-col justify-center">
+                    <h1 class="font-mont font-bold text-3xl mb-2">{{group_name}}</h1>
+                    <div class="copy-text">
+                        <p class="invite-heading text-lg">Invite Code:</p>
+                        <div class="invite-text flex border-[1px] border-black rounded-lg mb-3 mt-1">
+                            <input class="rounded-lg text-[#555] text-center" size="12" type="text" id="txt" value="{{invite_code}}" readonly>
+                            <button class="relative flex justify-center items-center bg-accent rounded-lg p-1 active:bg-[#809ce2] before:content-['Copied'] before:absolute before:top-[-2.2rem] before:right--1 before:bg-[#5c81dc] before:px-1 before:rounded-lg before:text-white before:hidden  cpy-btn">
+                                <img src="{{url_for('static',filename='copy.svg')}}" alt=""  >
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container1 w-full flex flex-col mt-2">
+            <div class="tab-box self-center relative">
+                <button class="tab-btn active">Expenses</button>
+                <button class="tab-btn">Settlements</button>
+                <div class="line absolute top-6 h-[5px] w-[69px] left-[41px] lg:left-[88px] bg-accent transition-all ease-in-out delay-150"></div>
+            </div>
+
+            <div class="content-box mb-[10rem]">
+                <div class="content mt-2 hidden active px-5 pt-2">
+                    {% for i in range(expenses|length) %}
+                    <div class="bg-white shadow-md rounded-xl w-full mb-2">
+                        <a href="{{url_for('exp', gid=gid, eid=expenses[i].eid)}}" class="flex flex-col items-center justify-between p-6 space-y-2">
+                            <div class="flex items-center justify-between w-full">
+                                <div class="flex items-center">
+                                    <i class="fas fa-solid fa-receipt fa-2xl"></i>
+                                    <div class="ml-4">
+                                        <p class="text-2xl font-semibold ml-[-0.5rem]">{{expenses[i].description.title()}}</p>
+                                    </div>
+                                </div>
+                                <p class="text-gray-500 text-xl font-bold">Rs. {{expenses[i].amount}}</p>
+                            </div>
+                            <div class="flex justify-between w-full">
+                                <div class="flex space-x-1 items-center">
+                                    <p class="text-sm text-gray-500">Paid by</p>
+                                    <p class="text-sm font-semibold">{{payers[i].title()}}</p>
+                                </div>
+                                <div class="flex items-center space-x-1">
+                                    {% if owed[i] < 0 %}
+                                        <p class="text-sm text-gray-500">You get</p>
+                                    {% else %}
+                                        <p class="text-sm text-gray-500">You owe</p>
+                                    {% endif %}
+
+                                    {% if owed[i] < 0 %}
+                                        <p class="font-semibold">Rs.{{0-owed[i]}}</p>
+                                    {% else %}
+                                        <p class="font-semibold">Rs.{{owed[i]}}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="content hidden">
+                    <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Reprehenderit eaque, deleniti voluptatibus incidunt quas atque numquam. Vitae cum ipsum iste ut laborum molestiae voluptas delectus laboriosam, nemo, in eveniet rem!</p>
+                </div>
+            </div>
+        </div>
+
+        <a href="{{url_for('add_expense', gid=gid)}}" class="bg-accent rounded-full p-4 flex justify-center items-center fixed bottom-[6rem] right-5">
+            <img src="{{url_for('static',filename='plus.svg')}}" alt="">
+        </a>
+        {% include 'nav.html' %}
+    </div>
+    <script>
+        const copySvgUrl = "{{url_for('static', filename='copy.svg')}}";
+        const copiedUrl = "{{url_for('static', filename='check.svg')}}";
+    </script>
+    <script defer src="{{url_for('static',filename='copy.js')}}"></script>
+</body>
+
+</html>
