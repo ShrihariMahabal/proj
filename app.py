@@ -59,14 +59,17 @@ def login():
         password = request.form['password']
 
         cur = mysql.connection.cursor()
-        cur.execute("SELECT * FROM users WHERE username = %s and password = %s", (username,password,))
+        cur.execute("SELECT username, password, uid FROM users WHERE username = %s", (username,))
         user = cur.fetchone()
         cur.close()
 
-        if user:
+        if user and user['password']==password:
             session['username'] = user['username']
             session['uid'] = user['uid']
             return redirect(url_for('home'))
+        elif user:
+            error="Incorrect Credentials"
+            return render_template('login.html', error=error)
         else:
             error = 'User does not exist'
             return render_template('login.html', error=error)
