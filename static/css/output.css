@@ -1278,3 +1278,16 @@ video {
     width: 35%;
   }
 }
+
+#logout {
+  color: black;
+  text-align: center;
+  background-color: whitesmoke; 
+  border: 2px solid white; 
+  display: inline-block; 
+  cursor: pointer; 
+  transition: background-color 0.3s ease; 
+  border-radius: 5px; 
+  font-size: 20px; 
+  padding: 10px 20px;
+}
