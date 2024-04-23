@@ -17,7 +17,8 @@ module.exports = {
 
       fontFamily: {
         'mont': ['Montserrat', 'sans-serif'],
-        'roboto': ['Roboto', 'sans-serif']
+        'roboto': ['Roboto', 'sans-serif'],
+        'pop': ['Poppins', 'sans-serif']
       },
     },
   },

@@ -4,7 +4,6 @@ from flask_mysqldb import MySQL
 import MySQLdb.cursors
 import secrets
 
-# i am gay shri
 
 app = Flask(__name__)
 
@@ -18,6 +17,7 @@ app.config['MYSQL_PORT'] = 3309
 app.config['MYSQL_CURSORCLASS'] = "DictCursor"
 
 mysql = MySQL(app)
+colors = ['6D9F71','56CBF9','525252','FF8360','30362F','C7D66D']
 
 @app.route('/')
 def index():
@@ -42,15 +42,18 @@ def split(gid):
         eid = i['eid']
         payer = i['payer']
         amount = i['amount']
-        cur.execute("SELECT fid FROM paid_for WHERE eid=%s", (eid,))
-        fids = cur.fetchall()
-        n = len(fids)
-        owed = amount / n
-        cur.close()
-        for j in fids:
+        cur.execute("SELECT * FROM paid_for WHERE eid=%s", (eid,)) 
+        paidfor = cur.fetchall()
+        for j in paidfor:
             fid = j['fid']
+            owed = j['amt']
             matrix[dic[payer]][dic[fid]] += owed
-    return matrix, expenses, dic, fids
+    cur.close()
+    # l = len(matrix)
+    # for i in range(l):
+    #     for j in range(i+1, l):
+    #             matrix[i][j] = matrix[i][j] - matrix[j][i]
+    return matrix, dic
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -105,11 +108,17 @@ def register():
 @app.route('/home')
 def home():
     if 'username' in session:
+        uid = session['uid']
         cur = mysql.connection.cursor()
-        cur.execute("SELECT * FROM groups")
+        cur.execute("SELECT * FROM groups JOIN group_members ON groups.gid=group_members.gid WHERE uid=%s", (uid,))
         groups = cur.fetchall()
+        costs = []
+        for i in groups:
+            cur.execute("SELECT amount FROM paid_by WHERE gid=%s", (i['gid'],))
+            amts = [row['amount'] for row in cur.fetchall()]
+            costs.append(sum(amts))
         cur.close()
-        return render_template('home.html', groups=groups, username=session['username'], active_page='home')
+        return render_template('home.html', groups=groups, costs=costs, username=session['username'], active_page='home')
     return redirect(url_for('login'))
 
 @app.route('/create_group', methods=['GET', 'POST'])
@@ -120,7 +129,7 @@ def create_group():
         if not group_name:
             error = 'Please enter valid group name !'
             return render_template('create_group.html', error=error)
-        invite_code = secrets.token_hex(6)  # Generate random invite code
+        invite_code = secrets.token_hex(3)  # Generate random invite code
         uid = session['uid']
         cur = mysql.connection.cursor()
         cur.execute("INSERT INTO groups (group_name, invite_code) VALUES (%s, %s)", (group_name, invite_code))
@@ -140,8 +149,10 @@ def group_page(gid):
     group_name = cur.fetchone()['group_name']
 
     #to get all members of the group
-    cur.execute("SELECT username FROM users JOIN group_members ON users.uid = group_members.uid WHERE gid = %s", (gid,))
-    members = [row['username'] for row in cur.fetchall()]
+    cur.execute("SELECT * FROM users JOIN group_members ON users.uid = group_members.uid WHERE gid = %s", (gid,))
+    users = cur.fetchall()
+    # members = [row['username'] for row in users]
+    # uids = [row['uid'] for row in users]
 
     cur.execute("SELECT invite_code FROM groups WHERE gid=%s", (gid,))
     invite_code = cur.fetchone()['invite_code']
@@ -152,29 +163,31 @@ def group_page(gid):
     for i in expenses:
         cur.execute("SELECT username FROM users WHERE uid=%s", (i['payer'],))
         payers.append(cur.fetchone()['username'])
-        amount = i['amount']
+        # amount = i['amount']
         owes = 0
         eid = i['eid']
-        cur.execute("SELECT fid FROM paid_for WHERE eid=%s", {eid,})
-        fids = [int(row['fid']) for row in cur.fetchall()]
-        n = len(fids)
+        cur.execute("SELECT * FROM paid_for WHERE eid=%s", {eid,})
+        paidfor = cur.fetchall()
+        # n = len(fids)
         if i['payer'] == session['uid']:   #the user has paid
-            for j in fids:
-                if j == i['payer']:
+            for j in paidfor:
+                if j['fid'] == i['payer']:
                     continue
                 else:
-                    owes += amount / n
+                    owes += j['amt']
             owes = round(owes,2)
             owed.append(-owes)
         else:
-            if session['uid'] not in fids:
-                owes = 0
+            cur.execute("SELECT * FROM paid_for WHERE eid=%s AND fid=%s", (eid, session['uid'],))
+            x = cur.fetchone()
+            if x:
+                owes = x['amt']
             else:
-                owes = amount / n
+                owes = 0
             owed.append(round(owes,2))
     cur.close()
-
-    return render_template('group_page.html', group_name=group_name, members=members, invite_code=invite_code, gid=gid, expenses=expenses, payers=payers, owed=owed, uid=session['uid'])
+    matrix = split(gid)
+    return render_template('group_page.html', group_name=group_name, invite_code=invite_code, gid=gid, expenses=expenses, payers=payers, owed=owed, matrix=matrix, users=users)
 
 @app.route('/join_group', methods=['GET', 'POST'])
 def join_group():
@@ -201,12 +214,43 @@ def join_group():
 
     return render_template('join_group.html')
 
-@app.route('/add_expense/<int:gid>', methods=['GET', 'POST'])
-def add_expense(gid):
+# @app.route('/add_expense/<int:gid>', methods=['GET', 'POST'])
+# def add_expense(gid):
+#     cur = mysql.connection.cursor()
+#     cur.execute("SELECT * FROM users JOIN group_members ON users.uid=group_members.uid WHERE gid=%s", (gid,))
+#     members = cur.fetchall()
+#     cur.close()
+#     paid_for = []
+
+#     if request.method == 'POST':
+#         description = request.form['description']
+#         amount = request.form['amount']
+#         paid_by = request.form.getlist('paid_by[]')
+#         paid_for = request.form.getlist('paid_for[]')
+
+#         if not description or not amount or len(paid_by)==0 or len(paid_for)==0:
+#             error = 'Please fill all details !'
+#             return render_template('add_expense.html', error=error, gid=gid, paid_for=paid_for, members=members)
+        
+#         cur = mysql.connection.cursor()
+#         cur.execute("INSERT INTO paid_by(description, amount, payer, gid) VALUES (%s, %s, %s, %s)", (description, amount, int(paid_by[0]), gid))
+#         mysql.connection.commit()
+#         cur.execute("SELECT LAST_INSERT_ID()")
+#         eid = cur.fetchone()['LAST_INSERT_ID()']
+#         paid_for_no = len(paid_for)
+#         for i in range(paid_for_no):
+#             cur.execute("INSERT INTO paid_for(eid, fid) VALUES (%s, %s)", (eid, int(paid_for[i])))
+#             mysql.connection.commit()
+#         cur.close()
+#         return redirect(url_for('group_page', gid=gid))
+        
+#     return render_template('add_expense.html', gid=gid, members=members, paid_for=paid_for)
+
+@app.route('/add_expense2/<int:gid>', methods=['GET', 'POST'])
+def add_expense2(gid):
     cur = mysql.connection.cursor()
     cur.execute("SELECT * FROM users JOIN group_members ON users.uid=group_members.uid WHERE gid=%s", (gid,))
     members = cur.fetchall()
-    cur.close()
     paid_for = []
 
     if request.method == 'POST':
@@ -214,24 +258,50 @@ def add_expense(gid):
         amount = request.form['amount']
         paid_by = request.form.getlist('paid_by[]')
         paid_for = request.form.getlist('paid_for[]')
+        per_person = []
+        sum = 0
+        for i in members:
+            amt = request.form[f"ind{i['uid']}"]
+            if not amt:
+                amt = 0
+            sum += float(amt)
+            per_person.append(float(amt))
+        
+        if description and amount and paid_by:
+            if paid_for:   #equal
+                cur.execute("INSERT INTO paid_by(description, amount, payer, gid) VALUES (%s, %s, %s, %s)", (description, float(amount), int(paid_by[0]), gid))
+                mysql.connection.commit()
+                cur.execute("SELECT LAST_INSERT_ID()")
+                eid = cur.fetchone()['LAST_INSERT_ID()']
+                paid_for_no = len(paid_for)
+                amt1 = float(amount) / paid_for_no
+                for i in range(paid_for_no):
+                    cur.execute("INSERT INTO paid_for(eid, fid, amt) VALUES (%s, %s, %s)", (eid, int(paid_for[i]), amt1,))
+                    mysql.connection.commit()
+                cur.close()
+                return redirect(url_for('group_page', gid=gid))
+            elif per_person.count(0) != len(members):        #unequal
+                if sum != float(amount):
+                    error = 'Individual Amounts and Total Amount not Equal'
+                    return render_template('add_expense2.html', error=error, gid=gid, members=members)
+                cur.execute("INSERT INTO paid_by(description, amount, payer, gid) VALUES (%s, %s, %s, %s)", (description, float(amount), int(paid_by[0]), gid))
+                mysql.connection.commit()
+                cur.execute("SELECT LAST_INSERT_ID()")
+                eid = cur.fetchone()['LAST_INSERT_ID()']
+                for idx, i in enumerate(members):
+                    if per_person[idx] != 0:
+                        cur.execute("INSERT INTO paid_for(eid, fid, amt) VALUES (%s, %s, %s)", (eid, int(i['uid']), per_person[idx]))
+                        mysql.connection.commit()
+                cur.close()
+                return redirect(url_for('group_page', gid=gid))
+            else:
+                error = 'Please fill all details!'
+                return render_template('add_expense2.html', error=error, gid=gid, members=members)
+        else:
+            error = 'Please fill all details!'
+            return render_template('add_expense2.html', error=error, gid=gid, members=members)
 
-        if not description or not amount or len(paid_by)==0 or len(paid_for)==0:
-            error = 'Please fill all details !'
-            return render_template('add_expense.html', error=error, gid=gid, paid_for=paid_for, members=members)
-        
-        cur = mysql.connection.cursor()
-        cur.execute("INSERT INTO paid_by(description, amount, payer, gid) VALUES (%s, %s, %s, %s)", (description, amount, int(paid_by[0]), gid))
-        mysql.connection.commit()
-        cur.execute("SELECT LAST_INSERT_ID()")
-        eid = cur.fetchone()['LAST_INSERT_ID()']
-        paid_for_no = len(paid_for)
-        for i in range(paid_for_no):
-            cur.execute("INSERT INTO paid_for(eid, fid) VALUES (%s, %s)", (eid, int(paid_for[i])))
-            mysql.connection.commit()
-        cur.close()
-        return redirect(url_for('group_page', gid=gid))
-        
-    return render_template('add_expense.html', gid=gid, members=members, paid_for=paid_for)
+    return render_template('add_expense2.html', gid=gid, members=members)
 
 @app.route('/logout')
 def logout():
@@ -246,7 +316,39 @@ def exp(gid,eid):
     payerID = expense['payer']
     cur.execute("SELECT username FROM users WHERE uid=%s", (payerID,))
     payer = cur.fetchone()['username']
-    return render_template('exp.html', gid=gid, expense=expense, payer=payer)
+    cur.execute("SELECT * FROM paid_for WHERE eid=%s",(eid,))
+    paidfor = cur.fetchall()
+    dic = {}
+    for i in paidfor:
+        cur.execute("SELECT username FROM users WHERE uid=%s", (i['fid'],))
+        user = cur.fetchone()['username']
+        amt = i['amt']
+        dic[user] = round(amt, 2)
+    cur.close()
+    return render_template('exp.html', gid=gid, expense=expense, payer=payer, dic=dic, n=len(dic))
+
+@app.route('/settle/<int:gid>/<int:uid>')
+def settle(gid, uid):
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM users JOIN group_members ON users.uid=group_members.uid WHERE gid=%s", (gid,))
+    members = cur.fetchall()
+    cur.execute("SELECT * FROM users WHERE uid=%s", (uid,))
+    hero = cur.fetchone()
+    settlements = {}
+    balance = 0
+    matrix, dic = split(gid)
+    for i in members:
+        if i['uid'] == hero['uid']:
+            continue
+        else:
+            memberID = i['uid']
+            username = i['username']
+            amt = matrix[dic[uid]][dic[memberID]] - matrix[dic[memberID]][dic[uid]]
+            balance += amt
+            if amt != 0:
+                settlements[username] = amt
+
+    return render_template('settlement.html', settlements=settlements, hero=hero, gid=gid, balance=balance, colors=colors)
 
 
 if __name__ == '__main__':

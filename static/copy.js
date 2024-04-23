@@ -67,5 +67,30 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function toggleDropdown(dropdown) {
         dropdown.style.display = dropdown.style.display === "none" ? "block" : "none";
+        // Add logic to ensure only one checkbox can be selected for paidByDropdown
+        if (dropdown === paidByDropdown) {
+            const checkboxes = dropdown.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        checkboxes.forEach(otherCheckbox => {
+                            if (otherCheckbox !== this) {
+                                otherCheckbox.checked = false;
+                            }
+                        });
+                    }
+                });
+            });
+        }
     }
+});
+
+
+//leave group
+
+const opt = document.getElementById("opt");
+const leave = document.getElementById("leave");
+
+opt.addEventListener('click', function() {
+    leave.style.display = leave.style.display === "none" ? "block" : "none";
 });

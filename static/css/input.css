@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,11 +6,11 @@
 
 @layer components {
     .container {
-        @apply bg-slate-100 text-black font-['Roboto',sans-serif] w-full h-[100vh];
+        @apply bg-[#F4F5F7] text-black font-pop w-full h-[100vh];
     }
 
     .nav-btn {
-        @apply flex flex-col justify-center items-center w-[33%] font-['Poppins',sans-serif] font-medium opacity-60;
+        @apply flex flex-col justify-center items-center w-[33%] font-['Poppins',sans-serif] font-medium opacity-55;
     }
 
     .btn-primary {
@@ -43,5 +43,25 @@
 
     .content-box .content.active {
         @apply block;
+    }
+
+    .tab-btn.active {
+        @apply text-black;
+    }
+
+    .dropdown-menu {
+        @apply hidden;
+    }
+    
+    .dropdown-menu.show {
+        @apply block;
+    }
+
+    .nav-btn.active {
+        @apply opacity-100;
+    }
+
+    #leave {
+        @apply hidden;
     }
 }

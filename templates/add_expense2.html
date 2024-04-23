@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Expense</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='css/output.css')}}">
+</head>
+<body>
+    <div class="container">
+        <form action="#" method="POST">
+            <header class="flex justify-between items-center bg-accent text-white">
+                <a href="{{url_for('group_page', gid=gid)}}">
+                    <img class="h-[2.7rem] w-[2.7rem] m-2" src="{{url_for('static',filename='arrow-left.svg')}}" alt="">
+                </a>
+                <p class="text-xl font-semibold font-mont">New Expense</p>
+                <button type="submit" class="mr-2 text-xl">
+                    <p class="font-semibold">ADD</p>
+                </button>
+            </header>
+
+            <div class="w-[90%] lg:w-[35%] mx-auto my-6 bg-white p-6 rounded-lg shadow-md flex flex-col">
+                <h1 class="text-2xl font-bold mb-4 text-center">Add Expense</h1>
+                {% if error %}
+                    <p class="text-[red]">{{error}}</p>
+                {% endif %}
+                <!-- Description -->
+                <div class="mb-4">
+                    <input type="text" id="description" name="description" placeholder="Description"
+                        class="w-full p-2 border border-gray-300 rounded-md placeholder-gray-400 focus:bg-gray-100 focus:outline-none focus:border-blue-400"
+                        required>
+                </div>
+                <!-- Amount -->
+                <div class="mb-4">
+                    <input type="number" id="amount" name="amount" placeholder="Amount" step="0.01"
+                        class="w-full p-2 border border-gray-300 rounded-md placeholder-gray-400 focus:bg-gray-100 focus:outline-none focus:border-blue-400"
+                        required>
+                </div>
+
+                
+                <!-- Paid By dropdown -->
+                <div class="relative w-full mr-2">
+                    <button type="button" id="paidByBtn"
+                        class="w-full text-center p-2 border border-gray-500 rounded-md placeholder-gray-400 focus:bg-gray-100 focus:outline-none focus:border-blue-400">
+                        Paid By
+                    </button>
+                    <div id="paidByDropdown"
+                        class="dropdown-menu absolute z-10 bg-white w-full border border-gray-300 rounded-md shadow-md mt-1 hidden">
+                        {% for member in members %}
+                            <div class="inputs p-2 flex hover:bg-gray-200 active:bg-slate-200">
+                                <input type="checkbox" name="paid_by[]" id="b{{member.uid}}" value="{{member.uid}}" class="mr-2">
+                                <label for="b{{member.uid}}" class="block p-2 w-full">{{member.username}}</label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="rounded-lg px-2 mt-1">
+                    <p class="text-center font-semibold text-gray-500 font-mont my-2">Split Equally</p>
+                    <!-- Paid For dropdown -->
+                    <div class="mb-4 relative w-full mr-2">
+                        <button type="button" id="paidForBtn"
+                            class="w-full text-center p-2 border border-gray-500 rounded-md focus:bg-gray-100 placeholder-gray-400 focus:outline-none focus:border-blue-400">
+                            Paid For
+                        </button>
+                        <div id="paidForDropdown"
+                            class="dropdown-menu absolute z-10 bg-white w-full border border-gray-300 rounded-md shadow-md mt-1 hidden">
+                            {% for member in members %}
+                                <div class="inputs p-2 flex hover:bg-gray-200 active:bg-slate-200">
+                                    <input type="checkbox" name="paid_for[]" id="f{{member.uid}}" value="{{member.uid}}" class="mr-2">
+                                    <label for="f{{member.uid}}" class="block p-2 w-full">{{member.username}}</label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                
+
+                <p class="text-center mb-4 font-semibold font-mont text-gray-500">Unequal</p>
+                
+                {% for i in members %}
+                    <div class="flex justify-between items-center mb-2">
+                        <label for="ind{{i.uid}}" class="font-medium">{{i.username}}</label>
+                        <input type="number" id="ind{{i.uid}}" name="ind{{i.uid}}" placeholder="0.00" value="0" step="0.01"
+                            class="w-[50%] p-2 border border-gray-300 rounded-md placeholder-gray-400 focus:bg-gray-100 focus:outline-none focus:border-blue-400">
+                    </div>
+                {% endfor %}
+            </div>
+        </form>
+    </div>
+
+    <script defer src="{{url_for('static',filename='copy.js')}}"></script>
+</body>
+</html>

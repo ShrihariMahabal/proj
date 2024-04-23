@@ -10,7 +10,7 @@
 </head>
 <body>
     <div class="container">
-        <header class="flex justify-between items-center">
+        <header class="flex justify-between items-center bg-accent text-white">
             <a href="{{url_for('group_page', gid=gid)}}">
                 <img class="h-[2.7rem] w-[2.7rem] m-2" src="{{url_for('static',filename='arrow-left.svg')}}" alt="">
             </a>
@@ -18,12 +18,30 @@
             <a class="text-2xl mr-3" href="">Edit</a>
         </header>
 
-        <div class="flex flex-col space-y-2 justify-between items-start p-2 rounded-xl bg-white shadow-md m-6">
-            <p class="text-xl font-medium">{{expense.description}}</p>
-            <p class="text-xl">Rs.{{expense.amount}}</p>
-            <p class="text-xl">Paid by {{payer}}</p>
+        <div class="flex flex-col space-y-3 justify-between items-start px-4 py-3 rounded-xl bg-white shadow-lg m-6 mb-12">
+            <p class="text-2xl font-pop font-medium">{{expense.description}}</p>
+            <div class="flex justify-between w-full">
+                <p class="text-xl font-pop">Paid by <span class="font-semibold">{{payer.title()}}</span></p>
+                <p class="text-xl font-pop">Rs.<span class="font-semibold">{{expense.amount}}</span></p>
+            </div>
         </div>
 
+        <h1 class="font-semibold text-xl font-pop ml-6 mb-4">{{n}} 
+            {% if n > 1 %}
+                Participants
+            {% else %}
+                Participant
+            {% endif %}</h1>
+
+        <div class="mx-6 bg-white shadow rounded-lg flex flex-col">
+            {% for i in dic %}
+            <div class="flex space-x-5 items-center font-pop h-[4rem] relative border-b-2 border-slate-300 overflow-hidden">
+                <img src="{{url_for('static',filename='user.svg')}}" class="h-9 w-9 ml-1">
+                <p class="text-xl font-medium font-mont">{{i}}</p>
+                <p class="text-xl absolute right-4 px-1 border-2 rounded-xl border-slate-300 text-green-900">Rs.{{dic[i]}}</p>
+            </div>
+            {% endfor %}
+        </div>
     </div>
 </body>
 </html>

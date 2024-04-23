@@ -12,11 +12,16 @@
 
 <body>
     <div class="container">
-        <header>
+        <div class="flex justify-between items-center">
             <a href="{{url_for('home')}}">
-                <img class="h-[2.7rem] w-[2.7rem] m-2" src="{{url_for('static',filename='arrow-left.svg')}}" alt="">
+                <img class="h-10 w-10 m-2" src="{{url_for('static',filename='arrow-left-black.svg')}}" alt="">
             </a>
-        </header>
+            <div class="flex flex-col items-end space-y-1 relative">
+                <button id="opt" class="mr-1"><img src="{{url_for('static',filename='icons8-three-dots-30.png')}}" class="w-9 h-9"></button>
+
+                <a href="" id="leave" class="p-2 mr-1 rounded-lg text-center absolute top-10 text-xl hover:bg-[#A2AEBB] focus:bg-[#A2AEBB] bg-[#484041] text-white">Leave</a>
+            </div>
+        </div>
 
         <div class="grp-info-container flex justify-center">
             <div class="grp-info flex space-x-6">
@@ -26,9 +31,11 @@
                     <div class="copy-text">
                         <p class="invite-heading text-lg">Invite Code:</p>
                         <div class="invite-text flex border-[1px] border-black rounded-lg mb-3 mt-1">
-                            <input class="rounded-lg text-[#555] text-center" size="12" type="text" id="txt" value="{{invite_code}}" readonly>
-                            <button class="relative flex justify-center items-center bg-accent rounded-lg p-1 active:bg-[#809ce2] before:content-['Copied'] before:absolute before:top-[-2.2rem] before:right--1 before:bg-[#5c81dc] before:px-1 before:rounded-lg before:text-white before:hidden  cpy-btn">
-                                <img src="{{url_for('static',filename='copy.svg')}}" alt=""  >
+                            <input class="rounded-lg p-0 text-[#555] text-center" size="12" type="text" id="txt"
+                                value="{{invite_code}}" readonly>
+                            <button
+                                class="relative flex justify-center items-center bg-accent rounded-lg p-1 active:bg-[#809ce2] before:content-['Copied'] before:absolute before:top-[-2.2rem] before:right--1 before:bg-[#5c81dc] before:px-1 before:rounded-lg before:text-white before:hidden  cpy-btn">
+                                <img src="{{url_for('static',filename='copy.svg')}}" alt="">
                             </button>
                         </div>
                     </div>
@@ -38,21 +45,25 @@
 
         <div class="container1 w-full flex flex-col mt-2">
             <div class="tab-box self-center relative">
-                <button class="tab-btn active">Expenses</button>
-                <button class="tab-btn">Settlements</button>
-                <div class="line absolute top-6 h-[5px] w-[69px] left-[41px] lg:left-[88px] bg-accent transition-all ease-in-out delay-150"></div>
+                <button class="tab-btn active text-xl">Expenses</button>
+                <button class="tab-btn text-xl">Settlements</button>
+                <div
+                    class="line absolute top-7 h-[5px] w-[90px] left-[30px] lg:left-[88px] bg-black transition-all ease-in-out delay-150">
+                </div>
             </div>
 
             <div class="content-box mb-[10rem]">
                 <div class="content mt-2 hidden active px-5 pt-2">
                     {% for i in range(expenses|length) %}
                     <div class="bg-white shadow-md rounded-xl w-full mb-2">
-                        <a href="{{url_for('exp', gid=gid, eid=expenses[i].eid)}}" class="flex flex-col items-center justify-between p-6 space-y-2">
+                        <a href="{{url_for('exp', gid=gid, eid=expenses[i].eid)}}"
+                            class="flex flex-col items-center justify-between p-6 space-y-2">
                             <div class="flex items-center justify-between w-full">
                                 <div class="flex items-center">
                                     <i class="fas fa-solid fa-receipt fa-2xl"></i>
                                     <div class="ml-4">
-                                        <p class="text-2xl font-semibold ml-[-0.5rem]">{{expenses[i].description.title()}}</p>
+                                        <p class="text-2xl font-semibold ml-[-0.5rem]">
+                                            {{expenses[i].description.title()}}</p>
                                     </div>
                                 </div>
                                 <p class="text-gray-500 text-xl font-bold">Rs. {{expenses[i].amount}}</p>
@@ -63,17 +74,15 @@
                                     <p class="text-sm font-semibold">{{payers[i].title()}}</p>
                                 </div>
                                 <div class="flex items-center space-x-1">
-                                    {% if owed[i] < 0 %}
-                                        <p class="text-sm text-gray-500">You get</p>
-                                    {% else %}
+                                    {% if owed[i] < 0 %} <p class="text-sm text-gray-500">You get</p>
+                                        {% else %}
                                         <p class="text-sm text-gray-500">You owe</p>
-                                    {% endif %}
+                                        {% endif %}
 
-                                    {% if owed[i] < 0 %}
-                                        <p class="font-semibold">Rs.{{0-owed[i]}}</p>
-                                    {% else %}
-                                        <p class="font-semibold">Rs.{{owed[i]}}</p>
-                                    {% endif %}
+                                        {% if owed[i] < 0 %} <p class="font-semibold">Rs.{{0-owed[i]}}</p>
+                                            {% else %}
+                                            <p class="font-semibold">Rs.{{owed[i]}}</p>
+                                            {% endif %}
                                 </div>
                             </div>
                         </a>
@@ -81,13 +90,24 @@
                     {% endfor %}
                 </div>
 
-                <div class="content hidden">
-                    <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Reprehenderit eaque, deleniti voluptatibus incidunt quas atque numquam. Vitae cum ipsum iste ut laborum molestiae voluptas delectus laboriosam, nemo, in eveniet rem!</p>
+                <div class="content hidden mt-4">
+                    <div class="mx-6 bg-white shadow rounded-xl flex flex-col">
+                        {% for i in range(users|length) %}
+                        <a href="{{url_for('settle', gid=gid, uid=users[i].uid)}}"
+                            class="flex space-x-5 items-center font-pop h-[4rem] relative border-b-2 border-slate-300 overflow-hidden">
+                            <img src="{{url_for('static',filename='user.svg')}}" class="h-9 w-9 ml-1">
+                            <p class="text-xl font-medium font-mont">{{users[i].username}}</p>
+                            <img src="{{url_for('static',filename='chevron-right.svg')}}"
+                                class="h-8 w-8 absolute right-4">
+                        </a>
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
         </div>
 
-        <a href="{{url_for('add_expense', gid=gid)}}" class="bg-accent rounded-full p-4 flex justify-center items-center fixed bottom-[6rem] right-5">
+        <a href="{{url_for('add_expense2', gid=gid)}}"
+            class="bg-accent rounded-full p-4 flex justify-center items-center fixed bottom-[6rem] right-5">
             <img src="{{url_for('static',filename='plus.svg')}}" alt="">
         </a>
         {% include 'nav.html' %}

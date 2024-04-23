@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settle</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='css/output.css')}}">
+</head>
+
+<body>
+    <div class="container">
+        <header class="bg-accent text-white">
+            <div class="w-[59%] lg:w-[53%] flex justify-between items-center">
+                <a href="{{url_for('group_page', gid=gid)}}">
+                    <img class="h-[2.7rem] w-[2.7rem] m-2" src="{{url_for('static',filename='arrow-left.svg')}}" alt="">
+                </a>
+                <p class="text-2xl font-semibold font-mont">Settle</p>
+            </div>
+        </header>
+
+        <div class="h-[25vh] flex flex-col justify-center space-y-4 items-center bg-white rounded-b-3xl shadow-lg">
+            <div class="bg-accent rounded-full h-14 w-14 flex justify-center items-center p-2">
+                <p class="text-2xl font-semibold text-white">{{hero.username[0].title()}}</p>
+            </div>
+            <p class="text-2xl font-medium">{{hero.username.title()}}</p>
+            <p class="text-xl">Balance: Rs.{{balance}}</p>
+        </div>
+
+        <div class="m-6 bg-white flex flex-col rounded-xl shadow px-2 pt-3">
+            {% for i in settlements %}
+            <div class="flex items-center mb-3 space-x-2">
+                <div class="bg-accent rounded-full h-10 w-10 flex justify-center items-center p-2">
+                    <p class="text-xl font-medium text-white">{{i[0].title()}}</p>
+                </div>
+
+                {% if settlements[i] > 0 %}
+                <p class="text-lg m-1"><span class="font-semibold">{{i.title()}}</span> <span class="px-1 border-2 rounded-xl border-slate-300 text-green-900">owes</span>  <span
+                        class="font-semibold">Rs.{{settlements[i]}}</span></p>
+                {% else %}
+                <p class="text-lg m-1"><span class="font-semibold">{{i.title()}}</span> is <span class="px-1 border-2 rounded-xl border-slate-300 text-[#DD2D4A]">owed</span> <span
+                        class="font-semibold">Rs.{{0-settlements[i]}}</span></p>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+
+</html>
