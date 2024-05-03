@@ -58,13 +58,14 @@ def login():
         password = request.form['password']
 
         cur = mysql.connection.cursor()
-        cur.execute("SELECT username, password, uid FROM users WHERE username = %s", (username,))
+        cur.execute("SELECT username, password, uid, email FROM users WHERE username = %s", (username,))
         user = cur.fetchone()
         cur.close()
 
         if user and user['password']==password:
             session['username'] = user['username']
             session['uid'] = user['uid']
+            session['email'] = user['email']
             return redirect(url_for('home'))
         elif user:
             error="Incorrect Credentials"
@@ -228,11 +229,11 @@ def join_group():
 #         paid_for = request.form.getlist('paid_for[]')
 
 #         if not description or not amount or len(paid_by)==0 or len(paid_for)==0:
-#             error = 'Please fill all details !'
-#             return render_template('add_expense.html', error=error, gid=gid, paid_for=paid_for, members=members)
+#             error = 'Pleas    ill all details !'
+#             return render_    plate('add_expense.html', error=error, gid=gid, paid_for=paid_for, members=members)
         
-#         cur = mysql.connection.cursor()
-#         cur.execute("INSERT INTO paid_by(description, amount, payer, gid) VALUES (%s, %s, %s, %s)", (description, amount, int(paid_by[0]), gid))
+#         cur = mysql.connec    n.cursor()
+#         cur.execute("INSER    NTO paid_by(description, amount, payer, gid) VALUES (%s, %s, %s, %s)", (description, amount, int(paid_by[0]), gid))
 #         mysql.connection.commit()
 #         cur.execute("SELECT LAST_INSERT_ID()")
 #         eid = cur.fetchone()['LAST_INSERT_ID()']
@@ -437,6 +438,39 @@ def settle(gid, uid):
 
     return render_template('settlement.html', settlements=settlements, hero=hero, gid=gid, balance=round(balance,2), colors=colors)
 
+@app.route('/friends')
+def friends():  
+    cur=mysql.connection.cursor()
+    cur.execute("SELECT * FROM friends JOIN users ON friends.friend_id=users.uid WHERE friends.uid=%s", (session['uid'],))
+    friends=cur.fetchall()
+    cur.close()
+
+    return render_template('friends.html',friends=friends)
+
+@app.route('/add_friend', methods=['GET', 'POST'])  
+def add_friend():
+    if request.method=='POST':
+        friend_email=request.form['friend_email']
+
+        if not friend_email:
+            error='Invalid Email Address'
+            return render_template('add_friend.html', error=error)
+        
+        cur=mysql.connection.cursor()    
+        cur.execute("SELECT uid FROM users WHERE email=%s", (friend_email,))
+        friend_id=cur.fetchone()
+
+        if not friend_id:
+            error2='No User Found'
+            return render_template('add_friend.html', error2=error2)
+        
+
+        cur.execute("INSERT INTO friends (uid, friend_id) VALUES (%s, %s), (%s, %s)", (session['uid'], friend_id['uid'], friend_id['uid'], session['uid']))
+        mysql.connection.commit()
+        cur.close()
+        return redirect(url_for('friends'))
+    
+    return render_template('add_friend.html')
 
 if __name__ == '__main__':
     app.run(debug=True, host="192.168.136.11")
