@@ -17,7 +17,7 @@ app.config['MYSQL_PORT'] = 3309
 app.config['MYSQL_CURSORCLASS'] = "DictCursor"
 
 mysql = MySQL(app)
-colors = ['6D9F71','56CBF9','525252','FF8360','30362F','C7D66D']
+colors = ['#6D9F71','#56CBF9','#525252','#FF8360','#30362F','#C7D66D']
 
 @app.route('/')
 def index():
@@ -49,10 +49,6 @@ def split(gid):
             owed = j['amt']
             matrix[dic[payer]][dic[fid]] += owed
     cur.close()
-    # l = len(matrix)
-    # for i in range(l):
-    #     for j in range(i+1, l):
-    #             matrix[i][j] = matrix[i][j] - matrix[j][i]
     return matrix, dic
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -329,7 +325,95 @@ def exp(gid,eid):
         amt = i['amt']
         dic[user] = round(amt, 2)
     cur.close()
-    return render_template('exp.html', gid=gid, expense=expense, payer=payer, dic=dic, n=len(dic))
+    return render_template('exp.html', gid=gid, colors=colors, eid=eid, expense=expense, payer=payer, dic=dic, n=len(dic))
+
+@app.route('/edit_expense/<int:gid>/<int:eid>', methods=['GET', 'POST'])
+def edit_exp(gid, eid):
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM paid_by WHERE eid=%s", (eid,))
+    expense = cur.fetchone()
+    cur.execute("SELECT * FROM users JOIN group_members ON users.uid=group_members.uid WHERE gid=%s", (gid,))
+    members = cur.fetchall()
+    Desc = expense['description']
+    Amt = expense['amount']
+    paidBy = expense['payer']
+    cur.execute("SELECT amt FROM paid_for WHERE eid=%s", (eid,))
+    participants = cur.fetchall()
+    ind = []
+    ind_amts = []
+
+    #to check if split is equal/unequal
+    isEqual = 1
+    x = participants[0]['amt']
+    for i in participants:
+        if i['amt'] != x:
+            isEqual = 0
+
+    for i in members:
+        uid = i['uid']
+        cur.execute("SELECT amt FROM paid_for WHERE eid=%s AND fid=%s", (eid, uid,))
+        forexpense = cur.fetchone()
+        if forexpense:
+            ind_amts.append(forexpense['amt'])
+        else:
+            ind_amts.append(0)
+    
+    #deleting previous expense and adding new one
+    
+    if request.method == 'POST':
+        cur.execute("DELETE FROM paid_for WHERE eid=%s", (eid,))
+        mysql.connection.commit()
+        cur.execute("DELETE FROM paid_by WHERE eid=%s", (eid,))
+        mysql.connection.commit()
+        description = request.form['description']
+        amount = request.form['amount']
+        paid_by = request.form.getlist('paid_by[]')
+        paid_for = request.form.getlist('paid_for[]')
+        per_person = []
+        sum = 0
+        for i in members:
+            amt = request.form[f"ind{i['uid']}"]
+            if not amt:
+                amt = 0
+            sum += float(amt)
+            per_person.append(float(amt))
+        
+        if description and amount and paid_by:
+            if paid_for:   #equal
+                cur.execute("INSERT INTO paid_by(description, amount, payer, gid) VALUES (%s, %s, %s, %s)", (description, float(amount), int(paid_by[0]), gid))
+                mysql.connection.commit()
+                cur.execute("SELECT LAST_INSERT_ID()")
+                eid_ = cur.fetchone()['LAST_INSERT_ID()']
+                paid_for_no = len(paid_for)
+                amt1 = float(amount) / paid_for_no
+                for i in range(paid_for_no):
+                    cur.execute("INSERT INTO paid_for(eid, fid, amt) VALUES (%s, %s, %s)", (eid_, int(paid_for[i]), amt1,))
+                    mysql.connection.commit()
+                cur.close()
+                return redirect(url_for('group_page', gid=gid))
+            elif per_person.count(0) != len(members):        #unequal
+                if sum != float(amount):
+                    error = 'Individual Amounts and Total Amount not Equal'
+                    return render_template('edit_expense.html', error=error, gid=gid, members=members)
+                cur.execute("INSERT INTO paid_by(description, amount, payer, gid) VALUES (%s, %s, %s, %s)", (description, float(amount), int(paid_by[0]), gid))
+                mysql.connection.commit()
+                cur.execute("SELECT LAST_INSERT_ID()")
+                eid_ = cur.fetchone()['LAST_INSERT_ID()']
+                for idx, i in enumerate(members):
+                    if per_person[idx] != 0:
+                        cur.execute("INSERT INTO paid_for(eid, fid, amt) VALUES (%s, %s, %s)", (eid_, int(i['uid']), per_person[idx]))
+                        mysql.connection.commit()
+                cur.close()
+                return redirect(url_for('group_page', gid=gid))
+            else:
+                error = 'Please fill all details!'
+                return render_template('edit_expense.html', error=error, gid=gid, members=members)
+        else:
+            error = 'Please fill all details!'
+            return render_template('edit_expense.html', error=error, gid=gid, members=members)
+
+
+    return render_template('edit_expense.html', members=members, gid=gid, eid=eid, Desc=Desc, Amt=Amt, paidBy=paidBy, isEqual=isEqual, ind_amts=ind_amts)
 
 @app.route('/settle/<int:gid>/<int:uid>')
 def settle(gid, uid):
@@ -350,9 +434,9 @@ def settle(gid, uid):
             amt = matrix[dic[uid]][dic[memberID]] - matrix[dic[memberID]][dic[uid]]
             balance += amt
             if amt != 0:
-                settlements[username] = amt
+                settlements[username] = round(amt,2)
 
-    return render_template('settlement.html', settlements=settlements, hero=hero, gid=gid, balance=balance, colors=colors)
+    return render_template('settlement.html', settlements=settlements, hero=hero, gid=gid, balance=round(balance,2), colors=colors)
 
 @app.route('/friends')
 def friends():  
@@ -422,4 +506,6 @@ def friend_settle(friend_id):
     return render_template('friend_settle.html',amt_owed=amt_owed,amt_owes=amt_owes,name=name,list=list, list_gid=list_gid,user=user, friend_id=friend_id)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host="192.168.136.11")
+
+# host="192.168.0.164"
