@@ -356,13 +356,25 @@ def settle(gid, uid):
 
 @app.route('/friends')
 def friends():  
+    amt_owes=0
+    amt_owed=0
     cur=mysql.connection.cursor()
     cur.execute("SELECT * FROM friends JOIN users ON friends.friend_id=users.uid WHERE friends.uid=%s", (session['uid'],))
     friends=cur.fetchall()
+    cur.execute("SELECT * FROM paid_by WHERE payer=%s", (session['uid'],))
+    owed=cur.fetchall()
+    cur.execute("SELECT * FROM paid_for WHERE fid=%s", (session['uid'],))
+    owes=cur.fetchall()
     cur.close()
 
-    return render_template('friends.html',friends=friends)
+    for idx,i in enumerate(owed):
+        amt_owed+=owed[idx]['amount']
+    
+    for idx,i in enumerate(owes):
+        amt_owes+=owes[idx]['amt']
 
+    return render_template('friends.html',friends=friends, name=session['username'], amt_owed=amt_owed, amt_owes=amt_owes)
+    
 @app.route('/add_friend', methods=['GET', 'POST'])  
 def add_friend():
     if request.method=='POST':
@@ -380,13 +392,34 @@ def add_friend():
             error2='No User Found'
             return render_template('add_friend.html', error2=error2)
         
-
         cur.execute("INSERT INTO friends (uid, friend_id) VALUES (%s, %s), (%s, %s)", (session['uid'], friend_id['uid'], friend_id['uid'], session['uid']))
         mysql.connection.commit()
         cur.close()
         return redirect(url_for('friends'))
     
     return render_template('add_friend.html')
+
+@app.route('/friend_settle/<int:friend_id>')
+def friend_settle(friend_id):
+    user=session['uid']
+    amt_owes=0
+    amt_owed=0
+    list_gid={}
+    cur=mysql.connection.cursor()
+    cur.execute("SELECT username FROM users WHERE uid=%s", (friend_id,))
+    name=cur.fetchone()
+
+    cur.execute("SELECT payer,fid,paid_for.amt,paid_by.gid,groups.group_name,description FROM paid_by JOIN paid_for JOIN groups ON paid_by.eid=paid_for.eid AND paid_by.gid=groups.gid WHERE (payer=%s AND fid=%s) OR (payer=%s AND fid=%s)", (friend_id,user,user,friend_id))
+    list=cur.fetchall()
+    
+    for idx,i in enumerate(list):
+        list_gid[list[idx]['gid']]=list[idx]['group_name']
+        if list[idx]['payer']==user and list[idx]['fid']==friend_id:
+            amt_owed+=list[idx]['amt']
+        elif list[idx]['payer']==friend_id and list[idx]['fid']==user:
+            amt_owes+=list[idx]['amt'] 
+
+    return render_template('friend_settle.html',amt_owed=amt_owed,amt_owes=amt_owes,name=name,list=list, list_gid=list_gid,user=user, friend_id=friend_id)
 
 if __name__ == '__main__':
     app.run(debug=True)
