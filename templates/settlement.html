@@ -13,13 +13,13 @@
         <header class="bg-accent text-white">
             <div class="w-[59%] lg:w-[53%] flex justify-between items-center">
                 <a href="{{url_for('group_page', gid=gid)}}">
-                    <img class="h-[2.7rem] w-[2.7rem] m-2" src="{{url_for('static',filename='arrow-left.svg')}}" alt="">
+                    <img class="h-8 w-8 m-2" src="{{url_for('static',filename='arrow-left.svg')}}" alt="">
                 </a>
-                <p class="text-2xl font-semibold font-mont">Settle</p>
+                <p class="text-xl font-semibold font-mont">Settle</p>
             </div>
         </header>
 
-        <div class="h-[25vh] flex flex-col justify-center space-y-4 items-center bg-white rounded-b-3xl shadow-lg">
+        <div class="h-[25vh] flex flex-col justify-center space-y-3 items-center bg-white rounded-b-3xl shadow-lg">
             <div class="bg-accent rounded-full h-14 w-14 flex justify-center items-center p-2">
                 <p class="text-2xl font-semibold text-white">{{hero.username[0].title()}}</p>
             </div>
@@ -28,6 +28,9 @@
         </div>
 
         <div class="m-6 bg-white flex flex-col rounded-xl shadow px-2 pt-3">
+            {% if settlements|length == 0 %}
+            <p class="text-[red] text-center text-lg mt-[-0.8rem]">No settlements pending !</p>
+            {% endif %}
             {% for i in settlements %}
             <div class="flex items-center mb-3 space-x-2">
                 <div class="bg-accent rounded-full h-10 w-10 flex justify-center items-center p-2">

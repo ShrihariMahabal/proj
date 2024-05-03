@@ -11,10 +11,10 @@
         <form action="#" method="POST">
             <header class="flex justify-between items-center bg-accent text-white">
                 <a href="{{url_for('group_page', gid=gid)}}">
-                    <img class="h-8 w-8 m-2" src="{{url_for('static',filename='arrow-left.svg')}}" alt="">
+                    <img class="h-[2.7rem] w-[2.7rem] m-2" src="{{url_for('static',filename='arrow-left.svg')}}" alt="">
                 </a>
-                <p class="text-xl font-semibold font-mont">New Expense</p>
-                <button type="submit" class="mr-2 text-lg">
+                <p class="text-xl font-semibold font-mont">Edit Expense</p>
+                <button type="submit" class="mr-2 text-xl">
                     <p class="font-semibold">ADD</p>
                 </button>
             </header>
@@ -26,13 +26,13 @@
                 {% endif %}
                 <!-- Description -->
                 <div class="mb-4">
-                    <input type="text" id="description" name="description" placeholder="Description"
+                    <input type="text" id="description" name="description" value="{{Desc}}" placeholder="Description"
                         class="w-full p-2 border border-gray-300 rounded-md placeholder-gray-400 focus:bg-gray-100 focus:outline-none focus:border-blue-400"
                         required>
                 </div>
                 <!-- Amount -->
                 <div class="mb-4">
-                    <input type="number" id="amount" name="amount" placeholder="Amount" step="0.01"
+                    <input type="number" id="amount" name="amount" value="{{Amt}}" placeholder="Amount" step="0.01"
                         class="w-full p-2 border border-gray-300 rounded-md placeholder-gray-400 focus:bg-gray-100 focus:outline-none focus:border-blue-400"
                         required>
                 </div>
@@ -46,10 +46,10 @@
                     </button>
                     <div id="paidByDropdown"
                         class="dropdown-menu absolute z-10 bg-white w-full border border-gray-300 rounded-md shadow-md mt-1 hidden">
-                        {% for member in members %}
+                        {% for i in range(members|length) %}
                             <div class="inputs p-2 flex hover:bg-gray-200 active:bg-slate-200">
-                                <input type="checkbox" name="paid_by[]" id="b{{member.uid}}" value="{{member.uid}}" class="mr-2">
-                                <label for="b{{member.uid}}" class="block p-2 w-full">{{member.username}}</label>
+                                <input type="checkbox" name="paid_by[]" id="b{{members[i].uid}}" value="{{members[i].uid}}" {% if members[i].uid == paidBy %} checked {% endif %} class="mr-2">
+                                <label for="b{{members[i].uid}}" class="block p-2 w-full">{{members[i].username}}</label>
                             </div>
                         {% endfor %}
                     </div>
@@ -65,10 +65,10 @@
                         </button>
                         <div id="paidForDropdown"
                             class="dropdown-menu absolute z-10 bg-white w-full border border-gray-300 rounded-md shadow-md mt-1 hidden">
-                            {% for member in members %}
+                            {% for i in range(members|length) %}
                                 <div class="inputs p-2 flex hover:bg-gray-200 active:bg-slate-200">
-                                    <input type="checkbox" name="paid_for[]" id="f{{member.uid}}" value="{{member.uid}}" class="mr-2">
-                                    <label for="f{{member.uid}}" class="block p-2 w-full">{{member.username}}</label>
+                                    <input type="checkbox" name="paid_for[]" id="f{{members[i].uid}}" value="{{members[i].uid}}" class="mr-2" {% if isEqual and ind_amts[i]!=0 %} checked {% endif %}>
+                                    <label for="f{{members[i].uid}}" class="block p-2 w-full">{{members[i].username}}</label>
                                 </div>
                             {% endfor %}
                         </div>
@@ -78,10 +78,12 @@
 
                 <p class="text-center mb-4 font-semibold font-mont text-gray-500">Unequal</p>
                 
-                {% for i in members %}
+                {% for i in range(members|length) %}
                     <div class="flex justify-between items-center mb-2">
-                        <label for="ind{{i.uid}}" class="font-medium">{{i.username}}</label>
-                        <input type="number" id="ind{{i.uid}}" name="ind{{i.uid}}" placeholder="0.00" value="0" step="0.01"
+                        <label for="ind{{members[i].uid}}" class="font-medium">{{members[i].username}}</label>
+                        <input type="number" id="ind{{members[i].uid}}" name="ind{{members[i].uid}}" placeholder="0.00" step="0.01" {% if not isEqual %}
+                            value="{{ind_amts[i]}}"
+                        {% endif %}
                             class="w-[50%] p-2 border border-gray-300 rounded-md placeholder-gray-400 focus:bg-gray-100 focus:outline-none focus:border-blue-400">
                     </div>
                 {% endfor %}

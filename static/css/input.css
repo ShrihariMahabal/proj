@@ -5,8 +5,12 @@
 @tailwind utilities;
 
 @layer components {
+    body {
+        @apply bg-[#F4F5F7];
+    }
+
     .container {
-        @apply bg-[#F4F5F7] text-black font-pop w-full h-[100vh];
+        @apply bg-[#F4F5F7] text-black font-pop w-full ;
     }
 
     .nav-btn {
@@ -22,7 +26,7 @@
     }
 
     .group-card {
-        @apply bg-white max-w-full mx-4 my-2 flex items-center space-x-3 shadow-md px-2 py-1 rounded-xl;
+        @apply bg-white max-w-full mx-4 my-1 flex items-center space-x-3 shadow-md px-2 py-1 rounded-xl;
     }
 
     .form-input {
