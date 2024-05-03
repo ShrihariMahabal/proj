@@ -131,7 +131,7 @@ def create_group():
             return render_template('create_group.html', error=error)
         invite_code = secrets.token_hex(3)  # Generate random invite code
         uid = session['uid']
-        cur = mysql.connection.cursor()
+        cur = mysql.connection.cursor() 
         cur.execute("INSERT INTO groups (group_name, invite_code) VALUES (%s, %s)", (group_name, invite_code))
         mysql.connection.commit()
         cur.execute("SELECT LAST_INSERT_ID()")
@@ -445,19 +445,8 @@ def friends():
     cur=mysql.connection.cursor()
     cur.execute("SELECT * FROM friends JOIN users ON friends.friend_id=users.uid WHERE friends.uid=%s", (session['uid'],))
     friends=cur.fetchall()
-    cur.execute("SELECT * FROM paid_by WHERE payer=%s", (session['uid'],))
-    owed=cur.fetchall()
-    cur.execute("SELECT * FROM paid_for WHERE fid=%s", (session['uid'],))
-    owes=cur.fetchall()
-    cur.close()
 
-    for idx,i in enumerate(owed):
-        amt_owed+=owed[idx]['amount']
-    
-    for idx,i in enumerate(owes):
-        amt_owes+=owes[idx]['amt']
-
-    return render_template('friends.html',friends=friends, name=session['username'], amt_owed=amt_owed, amt_owes=amt_owes)
+    return render_template('friends.html',friends=friends, name=session['username'])
     
 @app.route('/add_friend', methods=['GET', 'POST'])  
 def add_friend():
@@ -504,6 +493,67 @@ def friend_settle(friend_id):
             amt_owes+=list[idx]['amt'] 
 
     return render_template('friend_settle.html',amt_owed=amt_owed,amt_owes=amt_owes,name=name,list=list, list_gid=list_gid,user=user, friend_id=friend_id)
+
+@app.route('/account')
+def account():
+    amt_owes=0
+    amt_owed=0
+    cur=mysql.connection.cursor()
+    cur.execute("SELECT * FROM users WHERE uid=%s", (session['uid'],))
+    user=cur.fetchone()
+    cur.execute("SELECT * FROM paid_by JOIN paid_for ON paid_by.eid=paid_for.eid WHERE payer=%s OR fid=%s", (session['uid'],session['uid']))
+    owe=cur.fetchall()
+    cur.close()
+
+    for idx,i in enumerate(owe):
+        if owe[idx]['payer']==session['uid'] and not owe[idx]['fid']==session['uid']:
+            amt_owed+=owe[idx]['amt'] 
+        if owe[idx]['fid']==session['uid'] and not owe[idx]['payer']==session['uid']:
+            amt_owes+=owe[idx]['amt']
+
+    return render_template('account.html', user=user,amt_owes=amt_owes,amt_owed=amt_owed)
+
+@app.route('/edit_username', methods=['GET','POST'])
+def edit_username():
+    cur=mysql.connection.cursor()
+    cur.execute("SELECT username from users")
+    existing= [row['username'] for row in cur.fetchall()] 
+    if request.method=='POST':
+        new_username=request.form['new_username']
+
+        if new_username in existing:
+            error="Username Already Exists"
+            return render_template('edit_username.html', error=error)
+        
+        cur.execute("UPDATE users SET username=%s WHERE uid=%s", (new_username,session['uid']))
+        mysql.connection.commit()
+        cur.close()
+        return redirect(url_for('account'))
+    return render_template('edit_username.html',existing=existing)
+
+@app.route('/password', methods=['GET','POST'])
+def edit_password():
+    cur=mysql.connection.cursor()
+    cur.execute("SELECT password from users WHERE uid=%s", (session['uid'],))
+    password=cur.fetchone()
+    if request.method=='POST':
+        current_password=request.form['current_password']
+        new_password=request.form['new_password']
+        re_new_password=request.form['re_new_password']
+
+        if current_password!=password['password']:
+            error="Incorrect Password"
+            return render_template('edit_password.html', error=error)
+        
+        if new_password!=re_new_password:
+            error2="New Password dosen't match Re-Typed Password"
+            return render_template('edit_password.html', error2=error2)
+        
+        cur.execute("UPDATE users SET password=%s WHERE uid=%s", (new_password,session['uid']))
+        mysql.connection.commit()
+        cur.close()
+        return redirect(url_for('account'))
+    return render_template('edit_password.html')
 
 if __name__ == '__main__':
     app.run(debug=True, host="192.168.136.11")

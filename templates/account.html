@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account</title>
+    <link href="{{url_for('static',filename='css/output.css')}}" rel="stylesheet">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/index.css')}}">
+</head>
+
+<body>
+    <div class="container">
+        {% include 'header.html' %}
+        <div class="mt-6 flex flex-col">
+            <div class="h-[25vh] flex flex-col justify-center space-y-4 items-center bg-white rounded-b-3xl shadow-lg">
+                <div class="bg-accent rounded-full h-14 w-14 flex justify-center items-center p-2">
+                    <p class="text-2xl font-semibold text-white">{{user['username'][0].title()}}</p>
+                </div>
+                <p class="text-2xl font-medium">{{user['username'].title()}}</p>
+                <p class="text-xl">Your Account</p>
+                <p class="text-xl">Total Amount You Are Owed: Rs.{{amt_owed}}</p>
+                <p class="text-xl">Total Amount You Owe: Rs.{{amt_owes}}</p>
+            </div>
+            <!-- <div class="mb-3 mx-4 flex justify-between">
+                <h1 class="font-mont font-semibold text-[1.7rem]">Your Account</h1>
+            </div> -->
+            <div class="group-card selection:bg-gray-400">
+                <div class="flex flex-col space-y-1">
+                    <h1 class="font-semibold font-pop text-xl">Your Username: {{user['username'].title()}}</h1>
+                    <h1 class="font-semibold font-pop text-xl">Your Email: {{user['email']}}</h1>
+                </div>  
+            </div> 
+            <a href="{{url_for('edit_username')}}" class="group-card selection:bg-gray-400">
+                <div class="flex flex-col space-y-1">
+                    <h1 class="font-semibold font-pop text-xl">Edit Username</h1>
+                </div>  
+            </a>
+            <a href="{{url_for('edit_password')}}" class="group-card selection:bg-gray-400">
+                <div class="flex flex-col space-y-1">
+                    <h1 class="font-semibold font-pop text-xl">Edit Password</h1>
+                </div>  
+            </a>
+            <div class="group-card selection:bg-gray-400">
+                <div class="flex flex-col space-y-1">
+                    <a href="{{url_for('logout')}}" style="margin-left: auto;">
+                        <button type="button" class="btn btn-outline-logout rounded-lg bg-white text-black p-2" id="logout">Logout</button>
+                    </a>
+                </div>  
+            </div>
+        </div>
+
+        {% include 'nav.html' %}
+        </a>
+    </div>
+</body>
+
+</html>
