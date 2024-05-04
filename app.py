@@ -555,6 +555,26 @@ def edit_password():
         return redirect(url_for('account'))
     return render_template('edit_password.html')
 
+@app.route('/dashboard')
+def dashboard():
+    amt_owes=0
+    amt_owed=0
+    cur=mysql.connection.cursor()
+    cur.execute("SELECT * FROM users WHERE uid=%s", (session['uid'],))
+    user=cur.fetchone()
+    cur.execute("SELECT * FROM paid_by JOIN paid_for ON paid_by.eid=paid_for.eid WHERE payer=%s OR fid=%s", (session['uid'],session['uid']))
+    owe=cur.fetchall()
+    cur.execute("SELECT * FROM paid_by JOIN groups ON paid_by.gid=groups.gid WHERE payer=%s", (session['uid'],))
+    paid=cur.fetchall()
+    cur.close()
+
+    for idx,i in enumerate(owe):
+        if owe[idx]['payer']==session['uid'] and not owe[idx]['fid']==session['uid']:
+            amt_owed+=owe[idx]['amt'] 
+        if owe[idx]['fid']==session['uid'] and not owe[idx]['payer']==session['uid']:
+            amt_owes+=owe[idx]['amt']
+    return render_template('dashboard.html', amt_owed=amt_owed, amt_owes=amt_owes, paid=paid)
+
 if __name__ == '__main__':
     app.run(debug=True, host="192.168.136.11")
 

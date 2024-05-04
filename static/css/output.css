@@ -583,6 +583,7 @@ video {
 body{
   --tw-bg-opacity: 1;
   background-color: rgb(244 245 247 / var(--tw-bg-opacity));
+  padding-bottom: 80px;
 }
 
 .container{
