@@ -10,7 +10,7 @@
     }
 
     .container {
-        @apply bg-[#F4F5F7] text-black font-pop w-full ;
+        @apply bg-[#F4F5F7] text-black font-pop w-full;
     }
 
     .nav-btn {

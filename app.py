@@ -131,7 +131,7 @@ def create_group():
             return render_template('create_group.html', error=error)
         invite_code = secrets.token_hex(3)  # Generate random invite code
         uid = session['uid']
-        cur = mysql.connection.cursor()
+        cur = mysql.connection.cursor() 
         cur.execute("INSERT INTO groups (group_name, invite_code) VALUES (%s, %s)", (group_name, invite_code))
         mysql.connection.commit()
         cur.execute("SELECT LAST_INSERT_ID()")
@@ -440,13 +440,14 @@ def settle(gid, uid):
 
 @app.route('/friends')
 def friends():  
+    amt_owes=0
+    amt_owed=0
     cur=mysql.connection.cursor()
     cur.execute("SELECT * FROM friends JOIN users ON friends.friend_id=users.uid WHERE friends.uid=%s", (session['uid'],))
     friends=cur.fetchall()
-    cur.close()
 
-    return render_template('friends.html',friends=friends)
-
+    return render_template('friends.html',friends=friends, name=session['username'])
+    
 @app.route('/add_friend', methods=['GET', 'POST'])  
 def add_friend():
     if request.method=='POST':
@@ -464,13 +465,115 @@ def add_friend():
             error2='No User Found'
             return render_template('add_friend.html', error2=error2)
         
-
         cur.execute("INSERT INTO friends (uid, friend_id) VALUES (%s, %s), (%s, %s)", (session['uid'], friend_id['uid'], friend_id['uid'], session['uid']))
         mysql.connection.commit()
         cur.close()
         return redirect(url_for('friends'))
     
     return render_template('add_friend.html')
+
+@app.route('/friend_settle/<int:friend_id>')
+def friend_settle(friend_id):
+    user=session['uid']
+    amt_owes=0
+    amt_owed=0
+    list_gid={}
+    cur=mysql.connection.cursor()
+    cur.execute("SELECT username FROM users WHERE uid=%s", (friend_id,))
+    name=cur.fetchone()
+
+    cur.execute("SELECT payer,fid,paid_for.amt,paid_by.gid,groups.group_name,description FROM paid_by JOIN paid_for JOIN groups ON paid_by.eid=paid_for.eid AND paid_by.gid=groups.gid WHERE (payer=%s AND fid=%s) OR (payer=%s AND fid=%s)", (friend_id,user,user,friend_id))
+    list=cur.fetchall()
+    
+    for idx,i in enumerate(list):
+        list_gid[list[idx]['gid']]=list[idx]['group_name']
+        if list[idx]['payer']==user and list[idx]['fid']==friend_id:
+            amt_owed+=list[idx]['amt']
+        elif list[idx]['payer']==friend_id and list[idx]['fid']==user:
+            amt_owes+=list[idx]['amt'] 
+
+    return render_template('friend_settle.html',amt_owed=amt_owed,amt_owes=amt_owes,name=name,list=list, list_gid=list_gid,user=user, friend_id=friend_id)
+
+@app.route('/account')
+def account():
+    amt_owes=0
+    amt_owed=0
+    cur=mysql.connection.cursor()
+    cur.execute("SELECT * FROM users WHERE uid=%s", (session['uid'],))
+    user=cur.fetchone()
+    cur.execute("SELECT * FROM paid_by JOIN paid_for ON paid_by.eid=paid_for.eid WHERE payer=%s OR fid=%s", (session['uid'],session['uid']))
+    owe=cur.fetchall()
+    cur.close()
+
+    for idx,i in enumerate(owe):
+        if owe[idx]['payer']==session['uid'] and not owe[idx]['fid']==session['uid']:
+            amt_owed+=owe[idx]['amt'] 
+        if owe[idx]['fid']==session['uid'] and not owe[idx]['payer']==session['uid']:
+            amt_owes+=owe[idx]['amt']
+
+    return render_template('account.html', user=user,amt_owes=amt_owes,amt_owed=amt_owed)
+
+@app.route('/edit_username', methods=['GET','POST'])
+def edit_username():
+    cur=mysql.connection.cursor()
+    cur.execute("SELECT username from users")
+    existing= [row['username'] for row in cur.fetchall()] 
+    if request.method=='POST':
+        new_username=request.form['new_username']
+
+        if new_username in existing:
+            error="Username Already Exists"
+            return render_template('edit_username.html', error=error)
+        
+        cur.execute("UPDATE users SET username=%s WHERE uid=%s", (new_username,session['uid']))
+        mysql.connection.commit()
+        cur.close()
+        return redirect(url_for('account'))
+    return render_template('edit_username.html',existing=existing)
+
+@app.route('/password', methods=['GET','POST'])
+def edit_password():
+    cur=mysql.connection.cursor()
+    cur.execute("SELECT password from users WHERE uid=%s", (session['uid'],))
+    password=cur.fetchone()
+    if request.method=='POST':
+        current_password=request.form['current_password']
+        new_password=request.form['new_password']
+        re_new_password=request.form['re_new_password']
+
+        if current_password!=password['password']:
+            error="Incorrect Password"
+            return render_template('edit_password.html', error=error)
+        
+        if new_password!=re_new_password:
+            error2="New Password dosen't match Re-Typed Password"
+            return render_template('edit_password.html', error2=error2)
+        
+        cur.execute("UPDATE users SET password=%s WHERE uid=%s", (new_password,session['uid']))
+        mysql.connection.commit()
+        cur.close()
+        return redirect(url_for('account'))
+    return render_template('edit_password.html')
+
+@app.route('/dashboard')
+def dashboard():
+    amt_owes=0
+    amt_owed=0
+    cur=mysql.connection.cursor()
+    cur.execute("SELECT * FROM users WHERE uid=%s", (session['uid'],))
+    user=cur.fetchone()
+    cur.execute("SELECT * FROM paid_by JOIN paid_for ON paid_by.eid=paid_for.eid WHERE payer=%s OR fid=%s", (session['uid'],session['uid']))
+    owe=cur.fetchall()
+    cur.execute("SELECT * FROM paid_by JOIN groups ON paid_by.gid=groups.gid WHERE payer=%s", (session['uid'],))
+    paid=cur.fetchall()
+    cur.close()
+
+    for idx,i in enumerate(owe):
+        if owe[idx]['payer']==session['uid'] and not owe[idx]['fid']==session['uid']:
+            amt_owed+=owe[idx]['amt'] 
+        if owe[idx]['fid']==session['uid'] and not owe[idx]['payer']==session['uid']:
+            amt_owes+=owe[idx]['amt']
+    return render_template('dashboard.html', amt_owed=amt_owed, amt_owes=amt_owes, paid=paid)
 
 if __name__ == '__main__':
     app.run(debug=True, host="192.168.136.11")
