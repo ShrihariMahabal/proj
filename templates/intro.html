@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Splitkaro Intro (Example)</title>
+  <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.min.css">
+  <style>
+    .swiper-button-next::after,.swiper-button-prev::after{
+        opacity: 0;
+    }
+  </style> 
+  
+</head>
+<body>
+  <div class="intro-page bg-gray-100 flex flex-col items-center justify-center h-screen">
+    <header class="absolute top-10 py-4">
+        <h1 class="text-4xl font-bold text-center text-purple-500">SplitIt</h1>
+        <h3 class="text-2xl text-gray-800 py-2 text-center">A collaborative expense tool</h3>
+    </header>
+    <div class="container m-8 carousel w-full max-w-md p-4">
+      <div class="swiper overflow-hidden rounded-lg shadow-lg p-6">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide px-3 py-6 flex flex-col items-center justify-center space-y-4">
+            <img class="w-24 h-24 mx-auto mb-4" src="https://tse1.mm.bing.net/th?id=OIP.8olTrvrATUNDXSYrRUNFkgHaHa&pid=Api&P=0&h=180" alt="Split bills image">
+            <h2 class="text-2xl font-bold text-black">Split bills, not friendship</h2>
+            <span class="text-center">Fairly split your shared expenses to save money while keeping your friendship healthy!</span>
+          </div>
+          <div class="swiper-slide px-3 py-6 flex flex-col items-center justify-center space-y-4">
+            <img class="w-24 h-24 mx-auto mb-4" src="https://tse1.mm.bing.net/th?id=OIP.coto-VxHflQEs78_FFU4OgHaGD&pid=Api&P=0&h=180" alt="Track balances image">
+            <h2 class="text-2xl font-bold text-black">Track balances effortlessly</h2>
+            <span class="text-center">Track who owes what with ease.</span>
+          </div>
+          <div class="swiper-slide px-3 py-6 flex flex-col items-center justify-center space-y-4">
+            <img class="w-24 h-24 mx-auto mb-4" src="https://play-lh.googleusercontent.com/qFsubsFkSJJJvpOLyjjp-1PLsPvVr5AmWWaaGk0wTJcjPE6HmZalZxGMDdY5MyAluw" alt="Settle payments image">
+            <h2 class="text-2xl text-center font-bold text-black">Settle payments, equally or unequally</h2>
+            <span class="text-center">Settle payments fairly. No more confusion or forgotten debts.</span>
+          </div>
+          <div class="swiper-slide px-3 py-6 flex flex-col items-center justify-center space-y-4">
+            <img class="w-24 h-24 mx-auto mb-4" src="https://framerusercontent.com/images/0MwMXSGdRzUoPAh1O6HaDq1k.png" alt="Go Dutch image">
+            <h2 class="text-2xl font-bold text-black">Analyze your expenses</h2>
+            <span class="text-center">Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum, quas.</span>
+          </div>
+        </div>
+        <div class="swiper-button-prev opacity-0"></div>
+        <div class="swiper-button-next opacity-0"></div>
+      </div>
+    </div>
+    <div class="buttons mt-10 flex justify-center space-x-4">
+      <button class="px-4 py-3 bg-white border border-black text-black font-bold text-xl rounded-lg shadow-lg hover:bg-purple-100">Get Started</button>
+      <button class="px-6 py-3 bg-black text-white font-bold text-xl rounded-lg shadow-md hover:bg-purple-700">Login</button>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/swiper@8/swiper-bundle.min.js"></script>
+  <script>
+    var swiper = new Swiper('.swiper', {
+      autoplay: {
+        delay: 3000, // Change delay (in milliseconds) for slide change
+      },
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+    });
+  </script>
+</body>
+</html>
