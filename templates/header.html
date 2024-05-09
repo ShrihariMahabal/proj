@@ -1,8 +1,7 @@
-<header class="w-full flex space-x-2 items-center px-2 py-2 bg-accent text-white">
+<header class="w-full flex space-x-2 items-center px-2 py-2 bg-purple-700 text-white">
     <img class="h-[2.5rem] w-[2.5rem]" src="{{url_for('static',filename='receipt-indian-rupee.svg')}}" alt="">
     <h1 class="font-mont font-extrabold text-2xl tracking-wide">SplitIt</h1>
     <a href="{{url_for('logout')}}" style="margin-left: auto;">
-    <button type="button" class="btn btn-outline-logout rounded-lg bg-white text-black p-2" id="logout">Logout</button>
+    <button type="button" class="btn btn-outline-logout rounded-lg text-black" id="logout">Logout</button>
     </a>
-    <p>{{username}}</p>
 </header>

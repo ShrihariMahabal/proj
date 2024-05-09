@@ -5,12 +5,8 @@
 @tailwind utilities;
 
 @layer components {
-    body {
-        @apply bg-[#F4F5F7];
-    }
-
     .container {
-        @apply bg-[#F4F5F7] text-black font-pop w-full;
+        @apply font-pop w-full;
     }
 
     .nav-btn {
@@ -18,7 +14,7 @@
     }
 
     .btn-primary {
-        @apply bg-accent p-1 rounded-3xl font-mont font-medium text-white hover:opacity-80 flex justify-center items-center;
+        @apply p-1 rounded-3xl font-mont font-medium text-white hover:opacity-80 flex justify-center items-center;
     }
 
     .btn-secondary {
