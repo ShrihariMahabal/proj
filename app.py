@@ -440,11 +440,10 @@ def settle(gid, uid):
 
 @app.route('/friends')
 def friends():  
-    amt_owes=0
-    amt_owed=0
     cur=mysql.connection.cursor()
     cur.execute("SELECT * FROM friends JOIN users ON friends.friend_id=users.uid WHERE friends.uid=%s", (session['uid'],))
     friends=cur.fetchall()
+    cur.close()
 
     return render_template('friends.html',friends=friends, name=session['username'])
     
@@ -484,6 +483,7 @@ def friend_settle(friend_id):
 
     cur.execute("SELECT payer,fid,paid_for.amt,paid_by.gid,groups.group_name,description FROM paid_by JOIN paid_for JOIN groups ON paid_by.eid=paid_for.eid AND paid_by.gid=groups.gid WHERE (payer=%s AND fid=%s) OR (payer=%s AND fid=%s)", (friend_id,user,user,friend_id))
     list=cur.fetchall()
+    cur.close()
     
     for idx,i in enumerate(list):
         list_gid[list[idx]['gid']]=list[idx]['group_name']
