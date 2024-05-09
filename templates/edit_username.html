@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Username</title>
     <link href="{{url_for('static',filename='css/output.css')}}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 
 <body>
@@ -20,8 +21,8 @@
                 {% if error %}
                 <p class="text-[red]">{{error}}</p>
                 {% endif %}
-                <button type="submit" class="btn-primary my-3">
-                    <p class="font-semibold">Submit</p>
+                <button type="submit" class="border border-purple-700 p-1 rounded-2xl bg-purple-700 my-3 text-white">
+                    <p class="font-semibold">Confirm</p>
                 </button>
                 <a class="btn-secondary" href="{{url_for('account')}}">Cancel</a>
             </form>
