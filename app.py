@@ -440,11 +440,10 @@ def settle(gid, uid):
 
 @app.route('/friends')
 def friends():  
-    amt_owes=0
-    amt_owed=0
     cur=mysql.connection.cursor()
     cur.execute("SELECT * FROM friends JOIN users ON friends.friend_id=users.uid WHERE friends.uid=%s", (session['uid'],))
     friends=cur.fetchall()
+    cur.close()
 
     return render_template('friends.html',friends=friends, name=session['username'])
     
@@ -484,6 +483,7 @@ def friend_settle(friend_id):
 
     cur.execute("SELECT payer,fid,paid_for.amt,paid_by.gid,groups.group_name,description FROM paid_by JOIN paid_for JOIN groups ON paid_by.eid=paid_for.eid AND paid_by.gid=groups.gid WHERE (payer=%s AND fid=%s) OR (payer=%s AND fid=%s)", (friend_id,user,user,friend_id))
     list=cur.fetchall()
+    cur.close()
     
     for idx,i in enumerate(list):
         list_gid[list[idx]['gid']]=list[idx]['group_name']
@@ -574,6 +574,20 @@ def dashboard():
         if owe[idx]['fid']==session['uid'] and not owe[idx]['payer']==session['uid']:
             amt_owes+=owe[idx]['amt']
     return render_template('dashboard.html', amt_owed=amt_owed, amt_owes=amt_owes, paid=paid)
+
+@app.route('/payment_chart/<int:gid>')
+def payment_chart(gid):
+    total_payment=0
+    cur=mysql.connection.cursor()
+    cur.execute("SELECT * FROM paid_by JOIN users ON paid_by.payer=users.uid WHERE gid=%s", (gid,))
+    chart_data=cur.fetchall()
+    cur.execute("SELECT group_name FROM groups WHERE gid=%s", (gid,))
+    group_name=cur.fetchone()['group_name']
+    cur.close()
+
+    for idx,i in enumerate(chart_data):
+        total_payment+=chart_data[idx]['amount']
+    return render_template('payment_chart.html',chart_data=chart_data,group_name=group_name,gid=gid,total_payment=total_payment)
 
 if __name__ == '__main__':
     app.run(debug=True, host="192.168.136.11")
