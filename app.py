@@ -581,11 +581,13 @@ def payment_chart(gid):
     chart_data=cur.fetchall()
     cur.execute("SELECT group_name FROM groups WHERE gid=%s", (gid,))
     group_name=cur.fetchone()['group_name']
+    cur.execute("SELECT invite_code FROM groups WHERE gid=%s", (gid,))
+    invite_code=cur.fetchone()['invite_code']
     cur.close()
 
     for idx,i in enumerate(chart_data):
         total_payment+=chart_data[idx]['amount']
-    return render_template('payment_chart.html',chart_data=chart_data,group_name=group_name,gid=gid,total_payment=total_payment)
+    return render_template('payment_chart.html',chart_data=chart_data,group_name=group_name,gid=gid,total_payment=total_payment,invite_code=invite_code)
 
 if __name__ == '__main__':
     app.run(debug=True, host="192.168.136.11")
