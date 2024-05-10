@@ -23,6 +23,8 @@ colors = ['#6D9F71','#56CBF9','#525252','#FF8360','#30362F','#C7D66D']
 
 @app.route('/')
 def index():
+    if 'username' in session:
+        return redirect(url_for('home'))
     return render_template('intro.html')
 
 def split(gid):
