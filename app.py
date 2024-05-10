@@ -416,7 +416,7 @@ def settle(gid, uid):
                 participants.append(i)
             else:
                 pending.append(i)
-    return render_template('settlement.html', amounts=amounts, participants=participants, pending=pending, hero=hero, gid=gid, balance=round(balance,2), colors=colors)
+    return render_template('settlement.html', amounts=amounts, participants=participants, pending=pending, hero=hero, gid=gid, balance=round(balance,2), colors=colors, matrix=matrix)
 
 @app.route('/create_checkout-session/<amount>/<gid>/<uid>/<fid>', methods=['GET'])
 def checkout_session(amount,gid,uid,fid):

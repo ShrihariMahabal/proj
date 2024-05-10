@@ -11,26 +11,22 @@
 
 <body class="bg-gray-200">
     <div class="mx-auto">
-        <header class="bg-purple-700 text-white py-4 px-8">
-            <div class="flex items-center">
+        <header class="bg-purple-700 text-white py-2 px-2">
+            <div class="flex space-x-20 items-center">
                 <a href="{{url_for('group_page', gid=gid)}}">
-                    <img class="h-8 w-8 mr-3" src="{{url_for('static',filename='arrow-left.svg')}}" alt="Back">
+                    <img class="h-8 w-8 mr-3" src="{{url_for('static',filename='arrow-left-white.svg')}}" alt="Back">
                 </a>
-                <h1 class="text-2xl font-semibold font-mont">Settle Debts</h1>
+                <h1 class="text-xl font-semibold font-mont">Settle Debts</h1>
             </div>
         </header>
 
-        <div class="mt-8 rounded-xl shadow-lg p-6">
-            <div class="flex items-center space-x-4">
-                <div class="">
-                    <div class="bg-purple-700 rounded-full h-16 w-16 flex justify-center items-center text-white text-3xl font-semibold">
-                        {{hero.username[0].title()}}
-                    </div>
-                    <div class="container m-2">
-                        <h2 class="mt-4 text-xl font-semibold">{{hero.username.title()}}</h2>
-                        <p class="text-lg">Balance: INR.{{balance}}</p>
-                    </div>
+        <div class="rounded-b-2xl shadow-lg p-6 pt-8 bg-white">
+            <div class="flex flex-col justify-center items-center space-y-3">
+                <div class="bg-purple-700 rounded-full h-16 w-16 flex justify-center items-center text-white text-3xl font-semibold">
+                    {{hero.username[0].title()}}
                 </div>
+                <h2 class="text-xl font-semibold">{{hero.username.title()}}</h2>
+                <p class="text-lg">Balance: INR.<span class="font-semibold">{{balance}}</span></p>
             </div>
         </div>
 
@@ -47,7 +43,7 @@
                 {% if amounts[i] > 0 %}
                 <p class="text-lg m-1 text-nowrap">
                     <p class="font-semibold truncate text-lg max-w-[5.8rem]">{{participants[i]['username'].title()}}</p>
-                    <span class="px-1 text-lg border-2 rounded-xl border-slate-300 text-green-900"> owes </span>
+                    <span class="px-1 flex justify-center items-center text-lg border-2 rounded-xl border-slate-300 text-green-900"> owes </span>
                     <span
                         class="font-semibold text-lg">Rs.{{amounts[i] | round(2)}}
                     </span>        
@@ -57,7 +53,7 @@
                     <a href="" class="flex justify-center items-center text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-3 py-2 absolute right-0 h-9 w-12"><img src="{{url_for('static',filename='bell-ring.svg')}}" alt=""></a>
                 {% endif %}
                 {% else %}
-                <p class="text-lg m-1"><p class="font-semibold text-lg truncate max-w-20">{{participants[i]['username'].title()}}</p> <span class="text-lg">is</span> <span class="px-1 border-2 rounded-xl border-slate-300 text-lg text-[#DD2D4A]">owed</span> <span
+                <p class="text-lg m-1"><p class="font-semibold text-lg truncate max-w-20">{{participants[i]['username'].title()}}</p> <span class="text-lg">is</span> <span class="px-1 flex justify-center items-center border-2 rounded-xl border-slate-300 text-lg text-[#DD2D4A]">owed</span> <span
                         class="font-semibold text-lg">Rs.{{0-amounts[i] | round(2)}}</span></p>
                 {% if hero.uid == session['uid'] %}
                 <a href="{{url_for('checkout_session',amount=0-amounts[i],gid=gid,uid=session['uid'],fid=participants[i]['uid'])}}" class="flex justify-center items-center text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-3 py-2 absolute right-0 h-9 w-12">Pay</a>
@@ -76,6 +72,7 @@
             {% endfor %}
         </div>
     </div>
+    <p>{{matrix}}</p>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const colors = ['bg-red-600', 'bg-blue-600', 'bg-red-600', 'bg-yellow-600', 'bg-purple-600', 'bg-pink-600'];

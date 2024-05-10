@@ -38,7 +38,7 @@
     }
 
     .tab-box .tab-btn {
-        @apply text-[#919191] font-[600] cursor-pointer;
+        @apply text-gray-500 font-[600] cursor-pointer;
     }
 
     .content-box .content.active {

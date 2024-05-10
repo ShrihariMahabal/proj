@@ -9,11 +9,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
+<body class="bg-gray-200">
     <div class="container">
         <header class="flex justify-between items-center bg-purple-700 text-white">
             <a href="{{url_for('group_page', gid=gid)}}">
-                <img class="h-8 w-8 m-2" src="{{url_for('static',filename='arrow-left.svg')}}" alt="">
+                <img class="h-8 w-8 m-2" src="{{url_for('static',filename='arrow-left-white.svg')}}" alt="">
             </a>
             <p class="text-xl font-semibold font-mont">Expense</p>
             <a class="text-lg mr-3" href="{{url_for('edit_exp', gid=gid, eid=eid)}}">Edit</a>
