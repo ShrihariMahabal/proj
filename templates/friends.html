@@ -36,7 +36,9 @@
             {% endif %}
             {% for i in range(friends|length) %}
             <a href="{{url_for('friend_settle', friend_id=friends[i].friend_id)}}" class="px-6 py-2 group-card selection:bg-gray-400">
-                <img class="h-[4rem] w-[4rem]" src="{{url_for('static',filename='icons8-purchase-order-96.png')}}" alt="">
+                <div class="rounded-full h-10 w-10 flex justify-center items-center text-white text-lg font-semibold mr-3" id="friendsss">
+                    {{friends[i].username[0].upper()}}
+                </div>
                 <div class="flex flex-col space-y-[0.8]">
                     <h1 class="font-semibold font-pop text-xl">{{friends[i].username}}</h1>
                     <p class="text-gray-500 text-md">Click to settle dues with {{friends[i].username}}</p>
@@ -51,6 +53,19 @@
         {% include 'nav.html' %}
         </a>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const colors = ['bg-green-600', 'bg-blue-600', 'bg-red-600', 'bg-yellow-600', 'bg-purple-600', 'bg-pink-600'];
+
+            const profileInitials = document.querySelectorAll('.rounded-full');
+
+            profileInitials.forEach((initial, index) => {
+                const colorIndex = index % colors.length;
+                initial.classList.add(colors[colorIndex]);
+                
+            });
+        });
+    </script>
 </body>
 
 </html>
