@@ -1,27 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Join Group</title>
     <link href="{{url_for('static',filename='css/output.css')}}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-    <div class="container h-[100vh] flex justify-center items-center font-['Poppins',sans-serif]">
-        <div class="flex flex-col justify-between items-center bg-white rounded-xl px-5 py-8 shadow-2xl">
-            <h1 class="font-bold text-2xl mt-3 mb-5">Join Group</h1>
-            <form action="{{url_for('join_group')}}" method="post" class="flex flex-col w-[20rem]">
-                <label class="my-1" for="invite_code">Group Code</label>
-                <input class="text-black rounded-lg bg-slate-100 mb-4 pl-2 py-[1px] border-[1px] border-slate-500" type="text" id="invite_code" name="invite_code">
+
+<body class="bg-gray-300 flex justify-center items-center h-screen">
+    <div class="bg-gray-300 container mx-auto">
+        <div class="bg-white rounded-xl shadow-xl m-8 p-8 pb-6 max-w-lg">
+            <h1 class="text-3xl font-bold text-center mb-8">Join Group</h1>
+            <form action="{{url_for('join_group')}}" method="post" class="space-y-4">
+                <div class="flex flex-col space-y-2">
+                    <label for="invite_code" class="text-lg font-semibold">Enter Group Code</label>
+                    <input type="text" id="invite_code" name="invite_code" placeholder="Group Code"
+                        class="border-b-2 border-purple-500 bg-transparent focus:outline-none focus:border-purple-700 text-lg py-2">
+                </div>
                 {% if error %}
-                    <p class="text-[red]">{{error}}</p>
+                <p class="text-red-500 text-center">{{error}}</p>
                 {% endif %}
-                <button type="submit" class="btn-primary my-3">
-                    <p class="font-semibold">Join</p>
-                </button>
-                <a class="btn-secondary" href="{{url_for('home')}}">Cancel</a>
+                <div class="flex justify-center">
+                    <button type="submit"
+                        class="bg-purple-700 hover:bg-purple-800 text-white font-semibold py-2 px-6 rounded-lg transition duration-300 ease-in-out transform hover:scale-105">Join</button>
+                </div>
+                <div class="flex justify-center">
+                    <a href="{{url_for('home')}}"
+                        class="text-sm text-purple-700 hover:underline hover:text-purple-800">Cancel</a>
+                </div>
             </form>
         </div>
     </div>
 </body>
+
 </html>
