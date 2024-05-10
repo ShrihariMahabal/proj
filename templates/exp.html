@@ -1,53 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>exp</title>
+    <title>Group Page</title>
     <link href="{{url_for('static',filename='css/output.css')}}" rel="stylesheet">
     <link rel="stylesheet" href="{{url_for('static',filename='css/index.css')}}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
+
 <body>
-    <div class="container">
-        <header class="flex justify-between items-center bg-accent text-white">
+    <div class="bg-gray-200 container">
+        <header class="p-2 mb-8 flex justify-between items-center bg-purple-700 text-white">
             <a href="{{url_for('group_page', gid=gid)}}">
-                <img class="h-8 w-8 m-2" src="{{url_for('static',filename='arrow-left.svg')}}" alt="">
+                <svg class="h-8 w-8" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" style="fill: rgba(255, 255, 255, 1);transform: ;msFilter:;"><path d="M21 11H6.414l5.293-5.293-1.414-1.414L2.586 12l7.707 7.707 1.414-1.414L6.414 13H21z"></path></svg>
             </a>
-            <p class="text-xl font-semibold font-mont">Expense</p>
-            <a class="text-lg mr-3" href="{{url_for('edit_exp', gid=gid, eid=eid)}}">Edit</a>
         </header>
 
-        <div class="flex flex-col space-y-2 justify-between items-start px-4 py-3 rounded-xl bg-white shadow-lg m-6 mb-12">
-            <p class="text-xl font-pop font-medium">{{expense.description}}</p>
-            <div class="flex justify-between w-full">
-                <p class="text-lg font-pop">Paid by <span class="font-semibold">{{payer.title()}}</span></p>
-                <p class="text-lg font-pop">Rs.<span class="font-semibold">{{expense.amount}}</span></p>
-            </div>
-        </div>
-
-        <h1 class="font-semibold text-lg font-pop ml-6 mb-4">{{n}} 
-            {% if n > 1 %}
-                Participants
-            {% else %}
-                Participant
-            {% endif %}</h1>
-
-        <div class="mx-6 bg-white shadow rounded-lg flex flex-col">
-            {% for i in dic %}
-            <div class="flex space-x-5 items-center font-pop h-[3.5rem] relative border-b-2 border-slate-300 overflow-hidden">
-                <div class="flex items-center justify-center rounded-full w-10 h-10 ml-1">
-                    <img src="{{url_for('static',filename='user.svg')}}" class="h-8 w-8">
+        <div class="grp-info-container flex justify-center">
+            <div class="grp-info flex space-x-6">
+                <img class="mr-3 w-[6rem] h-[6rem]" src="{{url_for('static',filename='icons8-group-96.png')}}" alt="">
+                <div class="flex flex-col justify-center">
+                    <h1 class="font-mont font-bold text-2xl">{{group_name}}</h1>
+                    <div class="copy-text">
+                        <p class="invite-heading text-md">Invite Code:</p>
+                        <div class="invite-text flex border-[1px] border-black rounded-lg p-1 mb-3 mt-1">
+                            <input class="rounded-lg text-[#555] text-sm text-center" size="3" type="text" id="txt"
+                                value="{{invite_code}}" readonly>
+                            <button
+                                class="relative flex justify-center items-center bg-purple-700 rounded-lg p-1 active:bg-[#809ce2] before:content-['Copied'] before:absolute before:top-[-2.2rem] before:right--1 before:bg-[#5c81dc] before:px-1 before:rounded-lg before:text-white before:hidden  cpy-btn">
+                                <img src="{{url_for('static',filename='copy.svg')}}" alt="">
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <p class="text-lg font-medium font-mont">{{i}}</p>
-                <p class="text-lg absolute right-4 px-1 border-2 rounded-xl border-slate-300 text-green-900">Rs.{{dic[i]}}</p>
             </div>
-            {% endfor %}
         </div>
+
+        <div class="container1 w-full flex flex-col mt-6">
+            <div class="tab-box self-center relative">
+                <button class="tab-btn active text-md">Expenses</button>
+                <button class="tab-btn text-md">Settlements</button>
+                <a href="{{url_for('payment_chart',gid=gid)}}" class="tab-btn text-md">Payment Chart</a>
+                <div
+                    class="line absolute top-7 h-[5px] w-[90px] left-0 lg:left-[76px] bg-black transition-all ease-in-out delay-150">
+                </div>
+            </div>
+
+            <div class="content-box mb-[10rem]">
+                <div class="content mt-2 hidden active px-5 pt-2">
+                    {% if expenses|length == 0 %}
+                    <p class="text-[red] text-center text-lg">No expenses yet !</p>
+                    {% endif %}
+                    <div class="flex flex-col space-y-2 lg:grid lg:grid-cols-2 lg:gap-4">
+                        {% for i in range(expenses|length) %}
+                        <a href="{{url_for('exp', gid=gid, eid=expenses[i].eid)}}"
+                            class="flex flex-col items-center justify-between p-5 space-y-2 bg-white shadow-md rounded-xl w-full hover:bg-gray-300 active:bg-gray-300">
+                            <div class="flex items-center justify-between w-full">
+                                <div class="flex items-center">
+                                    <i class="fas fa-solid fa-receipt fa-2xl"></i>
+                                    <div class="ml-4">
+                                        <p class="text-xl font-semibold ml-[-0.5rem]">
+                                            {{expenses[i].description.title()}}</p>
+                                    </div>
+                                </div>
+                                <p class="text-gray-500 text-xl font-bold">Rs. {{expenses[i].amount}}</p>
+                            </div>
+                            <div class="flex justify-between w-full">
+                                <div class="flex space-x-1 items-center">
+                                    <p class="text-sm text-gray-500">Paid by</p>
+                                    <p class="text-sm font-semibold">{{payers[i].title()}}</p>
+                                </div>
+                                <div class="flex items-center space-x-1">
+                                    {% if owed[i] < 0 %} <p class="text-sm text-gray-500">You get</p>
+                                        {% else %}
+                                        <p class="text-sm text-gray-500">You owe</p>
+                                        {% endif %}
+
+                                        {% if owed[i] < 0 %} <p class="font-semibold">Rs.{{0-owed[i]}}</p>
+                                            {% else %}
+                                            <p class="font-semibold">Rs.{{owed[i]}}</p>
+                                            {% endif %}
+                                </div>
+                            </div>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="content hidden mt-4">
+                    <div class="mx-6 bg-white shadow rounded-xl flex flex-col">
+                        {% for i in range(users|length) %}
+                        <a href="{{url_for('settle', gid=gid, uid=users[i].uid)}}"
+                            class="flex space-x-5 items-center font-pop h-[3.5rem] relative border-b-2 border-slate-300 overflow-hidden">
+                            <img src="{{url_for('static',filename='user.svg')}}" class="h-8 w-8 ml-1">
+                            <p class="text-lg font-medium font-mont">{{users[i].username}}</p>
+                            <img src="{{url_for('static',filename='chevron-right.svg')}}"
+                                class="h-8 w-8 absolute right-4">
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <a href="{{url_for('add_expense2', gid=gid)}}"
+            class="bg-purple-700 rounded-xl p-3 flex justify-center items-center fixed bottom-[5rem] right-5">
+            <h2 class="text-white text-lg font-semibold">+Add expense</h2>
+        </a>
+        {% include 'nav.html' %}
     </div>
-
     <script>
-
+        const copySvgUrl = "{{url_for('static', filename='copy.svg')}}";
+        const copiedUrl = "{{url_for('static', filename='check.svg')}}";
     </script>
+    <script defer src="{{url_for('static',filename='copy.js')}}"></script>
 </body>
+
 </html>
