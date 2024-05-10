@@ -9,6 +9,23 @@
     <link href="{{url_for('static',filename='css/output.css')}}" rel="stylesheet">
     <link rel="stylesheet" href="{{url_for('static',filename='css/index.css')}}">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        @keyframes slideRight {
+            0% {
+                transform: translateX(0);
+                opacity: 0.5;
+            }
+            100% {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+        
+        .slide-right {
+            animation: slideRight 0.3s ease;
+        }
+        
+    </style>
 </head>
 
 <body class="text-black bg-gray-200">
@@ -18,12 +35,9 @@
         <div class="text-center mt-4 p-4">
             <h1 class="font-semibold text-xl mt-6 mb-2 text-center">Hello, {{username}}</h1>
             <h1 class="text-4xl font-bold mb-4">Welcome to <span class="text-purple-700">SplitIt</span>!</h1>
-            <p class="text-lg text-gray-600 mb-8">The ultimate platform for managing and splitting expenses effortlessly.</p>
-            <div class="border-t-2 border-purple-700"></div>
         </div>
         
-        
-        <div class="container flex flex-col p-6 bg-gray-200 mb-20">
+        <div class="container mt-6 flex flex-col p-6 bg-gray-200 mb-20">
             <div class="mb-3 flex justify-between">
                 <h1 class="font-semibold text-2xl">Your Groups</h1>
             </div>
@@ -50,14 +64,23 @@
         </a>
         {% include 'nav.html' %}
         <script>
+            document.querySelectorAll('a').forEach(a => {
+                a.addEventListener('click', () => {
+                    document.querySelector('*').classList.add('slide-right');
+                });
+            });
+        </script>
+        <script>
             navButtons = document.querySelectorAll('.nav-btn');
             homebtn=document.getElementById("home");
+            accbtn=document.getElementById("acc");
             console.log("hi");
             navButtons.forEach(btn => {
                 btn.classList.remove('active');
             });
             homebtn.classList.add('active');
         </script>
+        
     </div>
 </body>
 

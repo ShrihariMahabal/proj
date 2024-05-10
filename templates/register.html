@@ -8,6 +8,23 @@
     <link href="{{url_for('static',filename='css/output.css')}}" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        @keyframes slideRight {
+            0% {
+                transform: translateX(0);
+                opacity: 0.5;
+            }
+            100% {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+        
+        .slide-right {
+            animation: slideRight 0.3s ease;
+        }
+        
+    </style>
 </head>
 
 <body class="bg-gray-100 font-['Poppins',sans-serif]">
@@ -44,7 +61,7 @@
                 {% endif %}
 
                 <button type="submit"
-                    class="block w-full bg-purple-700 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline">
+                    class="hello block w-full bg-purple-700 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline">
                     Register
                 </button>
 
@@ -53,6 +70,13 @@
             </form>
         </div>
     </div>
+    <script>
+        document.querySelectorAll('.hello').forEach(a => {
+            a.addEventListener('click', () => {
+                document.querySelector('*').classList.add('slide-right');
+            });
+        });
+    </script>
 </body>
 
 </html>
