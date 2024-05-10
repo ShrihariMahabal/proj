@@ -21,7 +21,7 @@
                 <p class="text-textgray mx-4 text-center text-2xl">No groups yet !</p>
             {% endif %}
             {% for i in range(groups|length) %}
-            <a href="{{url_for('group_page', gid=groups[i].gid)}}" class="group-card selection:bg-gray-400">
+            <a href="{{url_for('group_page', gid=groups[i].gid)}}" class="active:bg-gray-300 group-card selection:bg-gray-400">
                 <img class="h-[3rem] w-[3rem]" src="{{url_for('static',filename='icons8-purchase-order-96.png')}}" alt="">
                 <div class="flex flex-col">
                     <h1 class="font-semibold font-pop text-lg">{{groups[i].group_name}}</h1>

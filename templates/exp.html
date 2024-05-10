@@ -35,11 +35,11 @@
 
         <div class="mx-6 bg-white shadow rounded-lg flex flex-col">
             {% for i in dic %}
-            <div class="flex space-x-5 items-center font-pop h-[3.5rem] relative border-b-2 border-slate-300 overflow-hidden">
-                <div class="flex items-center justify-center rounded-full w-10 h-10 ml-1">
+            <div class="flex space-x-3 items-center font-pop h-[3.5rem] relative border-b-2 border-slate-300 overflow-hidden">
+                <div class="bg-accent rounded-full h-10 w-10 flex justify-center items-center p-2 flex-shrink-0 ml-2">
                     <img src="{{url_for('static',filename='user.svg')}}" class="h-8 w-8">
                 </div>
-                <p class="text-lg font-medium font-mont">{{i}}</p>
+                <p class="text-lg font-medium font-mont truncate max-w-40">{{i}}</p>
                 <p class="text-lg absolute right-4 px-1 border-2 rounded-xl border-slate-300 text-green-900">Rs.{{dic[i]}}</p>
             </div>
             {% endfor %}

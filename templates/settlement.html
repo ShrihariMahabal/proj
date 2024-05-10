@@ -27,23 +27,44 @@
             <p class="text-xl">Balance: Rs.{{balance}}</p>
         </div>
 
-        <div class="m-6 bg-white flex flex-col rounded-xl shadow px-2 pt-3">
-            {% if settlements|length == 0 %}
+        <div class="my-6 mx-2 bg-white flex flex-col rounded-xl shadow px-2 pt-3">
+            {% if participants|length == 0 %}
             <p class="text-[red] text-center text-lg mt-[-0.8rem]">No settlements pending !</p>
             {% endif %}
-            {% for i in settlements %}
-            <div class="flex items-center mb-3 space-x-2">
-                <div class="bg-accent rounded-full h-10 w-10 flex justify-center items-center p-2">
-                    <p class="text-xl font-medium text-white">{{i[0].title()}}</p>
+            {% for i in range(participants|length) %}
+            <div class="flex items-center mb-4 space-x-1 relative">
+                <div class="bg-accent rounded-full h-10 w-10 flex justify-center items-center p-2 flex-shrink-0">
+                    <p class="text-xl font-medium text-white">{{participants[i]['username'][0].title()}}</p>
                 </div>
 
-                {% if settlements[i] > 0 %}
-                <p class="text-lg m-1"><span class="font-semibold">{{i.title()}}</span> <span class="px-1 border-2 rounded-xl border-slate-300 text-green-900">owes</span>  <span
-                        class="font-semibold">Rs.{{settlements[i]}}</span></p>
-                {% else %}
-                <p class="text-lg m-1"><span class="font-semibold">{{i.title()}}</span> is <span class="px-1 border-2 rounded-xl border-slate-300 text-[#DD2D4A]">owed</span> <span
-                        class="font-semibold">Rs.{{0-settlements[i]}}</span></p>
+                {% if amounts[i] > 0 %}
+                <p class="text-lg m-1 text-nowrap">
+                    <p class="font-semibold truncate text-lg max-w-[5.8rem]">{{participants[i]['username'].title()}}</p>
+                    <span class="px-1 text-lg border-2 rounded-xl border-slate-300 text-green-900"> owes </span>
+                    <span
+                        class="font-semibold text-lg">Rs.{{amounts[i] | round(2)}}
+                    </span>        
+                </p>
+
+                {% if hero.uid == session['uid'] %}
+                    <a href="" class="flex justify-center items-center text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-3 py-2 absolute right-0 h-9 w-12"><img src="{{url_for('static',filename='bell-ring.svg')}}" alt=""></a>
                 {% endif %}
+                {% else %}
+                <p class="text-lg m-1"><p class="font-semibold text-lg truncate max-w-20">{{participants[i]['username'].title()}}</p> <span class="text-lg">is</span> <span class="px-1 border-2 rounded-xl border-slate-300 text-lg text-[#DD2D4A]">owed</span> <span
+                        class="font-semibold text-lg">Rs.{{0-amounts[i] | round(2)}}</span></p>
+                {% if hero.uid == session['uid'] %}
+                <a href="{{url_for('checkout_session',amount=0-amounts[i],gid=gid,uid=session['uid'],fid=participants[i]['uid'])}}" class="flex justify-center items-center text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-3 py-2 absolute right-0 h-9 w-12">Pay</a>
+                {% endif %}
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            {% for i in pending %}
+            <div class="flex items-center mb-4 space-x-2 relative">
+                <div class="bg-gray-600 rounded-full h-10 w-10 flex justify-center items-center p-2 flex-shrink-0">
+                    <p class="text-xl font-medium text-white">{{i['username'][0].title()}}</p>
+                </div>
+                <p class="font-medium truncate text-lg line-through text-gray-500">{{i['username'].title()}} is settled</p>
             </div>
             {% endfor %}
         </div>

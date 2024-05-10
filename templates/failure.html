@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Success</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='css/output.css')}}">
+</head>
+<body class="flex justify-center items-center h-screen w-full">
+    <div class="flex flex-col">
+        <div id="payment-success" class="flex items-center space-x-2">
+            <!-- Tick mark transition -->
+            <img class="h-10 w-10" src="{{url_for('static',filename='cancel.png')}}" alt="">
+            <!-- Payment Successful text -->
+            <p class="text-3xl font-bold">Payment Failed</p>
+        </div>
+        <a href="{{url_for('group_page', gid=gid)}}" class="text-white mt-4 self-center bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5">Home</a>
+    </div>
+</body>
+</html>

@@ -60,7 +60,7 @@
                                 <div class="flex items-center">
                                     <i class="fas fa-solid fa-receipt fa-2xl"></i>
                                     <div class="ml-4">
-                                        <p class="text-xl font-semibold ml-[-0.5rem]">
+                                        <p class="text-xl font-semibold ml-[-0.5rem] truncate max-w-40">
                                             {{expenses[i].description.title()}}</p>
                                     </div>
                                 </div>
@@ -69,7 +69,7 @@
                             <div class="flex justify-between w-full">
                                 <div class="flex space-x-1 items-center">
                                     <p class="text-sm text-gray-500">Paid by</p>
-                                    <p class="text-sm font-semibold">{{payers[i].title()}}</p>
+                                    <p class="text-sm font-semibold truncate">{{payers[i].title()}}</p>
                                 </div>
                                 <div class="flex items-center space-x-1">
                                     {% if owed[i] < 0 %} <p class="text-sm text-gray-500">You get</p>
@@ -92,9 +92,11 @@
                     <div class="mx-6 bg-white shadow rounded-xl flex flex-col">
                         {% for i in range(users|length) %}
                         <a href="{{url_for('settle', gid=gid, uid=users[i].uid)}}"
-                            class="flex space-x-5 items-center font-pop h-[3.5rem] relative border-b-2 border-slate-300 overflow-hidden">
-                            <img src="{{url_for('static',filename='user.svg')}}" class="h-8 w-8 ml-1">
-                            <p class="text-lg font-medium font-mont">{{users[i].username}}</p>
+                            class="flex space-x-3 items-center font-pop h-[3.5rem] relative border-b-2 border-slate-300 overflow-hidden">
+                            <div class="bg-accent rounded-full h-10 w-10 flex justify-center items-center p-2 flex-shrink-0 ml-2">
+                                <img src="{{url_for('static',filename='user.svg')}}" class="h-8 w-8">
+                            </div>
+                            <p class="text-lg font-medium font-mont truncate max-w-60">{{users[i].username}}</p>
                             <img src="{{url_for('static',filename='chevron-right.svg')}}"
                                 class="h-8 w-8 absolute right-4">
                         </a>

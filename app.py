@@ -3,9 +3,11 @@ from flask_session import Session
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
 import secrets
-
+import stripe
 
 app = Flask(__name__)
+
+stripe.api_key="sk_test_51PCEVTSDDxTJ1Yq1sMUNafG3YSJaU0tuCGZHNHojbnzpAWY3GBg7hzUvoapJRDySGRHGYLXlPmNj1jBYv4fVpDap00soc19E2y"
 
 app.secret_key = 'sk'
 
@@ -214,38 +216,6 @@ def join_group():
 
     return render_template('join_group.html')
 
-# @app.route('/add_expense/<int:gid>', methods=['GET', 'POST'])
-# def add_expense(gid):
-#     cur = mysql.connection.cursor()
-#     cur.execute("SELECT * FROM users JOIN group_members ON users.uid=group_members.uid WHERE gid=%s", (gid,))
-#     members = cur.fetchall()
-#     cur.close()
-#     paid_for = []
-
-#     if request.method == 'POST':
-#         description = request.form['description']
-#         amount = request.form['amount']
-#         paid_by = request.form.getlist('paid_by[]')
-#         paid_for = request.form.getlist('paid_for[]')
-
-#         if not description or not amount or len(paid_by)==0 or len(paid_for)==0:
-#             error = 'Pleas    ill all details !'
-#             return render_    plate('add_expense.html', error=error, gid=gid, paid_for=paid_for, members=members)
-        
-#         cur = mysql.connec    n.cursor()
-#         cur.execute("INSER    NTO paid_by(description, amount, payer, gid) VALUES (%s, %s, %s, %s)", (description, amount, int(paid_by[0]), gid))
-#         mysql.connection.commit()
-#         cur.execute("SELECT LAST_INSERT_ID()")
-#         eid = cur.fetchone()['LAST_INSERT_ID()']
-#         paid_for_no = len(paid_for)
-#         for i in range(paid_for_no):
-#             cur.execute("INSERT INTO paid_for(eid, fid) VALUES (%s, %s)", (eid, int(paid_for[i])))
-#             mysql.connection.commit()
-#         cur.close()
-#         return redirect(url_for('group_page', gid=gid))
-        
-#     return render_template('add_expense.html', gid=gid, members=members, paid_for=paid_for)
-
 @app.route('/add_expense2/<int:gid>', methods=['GET', 'POST'])
 def add_expense2(gid):
     cur = mysql.connection.cursor()
@@ -422,9 +392,19 @@ def settle(gid, uid):
     members = cur.fetchall()
     cur.execute("SELECT * FROM users WHERE uid=%s", (uid,))
     hero = cur.fetchone()
-    settlements = {}
+    amounts = []
+    participants = []
+    pending = []
     balance = 0
     matrix, dic = split(gid)
+    cur.execute("SELECT * FROM settled WHERE gid=%s", (gid,))
+    settled = cur.fetchall()
+    for i in settled:
+        paidby = i['uid']
+        paidfor = i['fid']
+        amount = i['amount']
+        matrix[dic[paidby]][dic[paidfor]] += amount
+        
     for i in members:
         if i['uid'] == hero['uid']:
             continue
@@ -433,10 +413,50 @@ def settle(gid, uid):
             username = i['username']
             amt = matrix[dic[uid]][dic[memberID]] - matrix[dic[memberID]][dic[uid]]
             balance += amt
-            if amt != 0:
-                settlements[username] = round(amt,2)
+            if round(amt,2) != 0:
+                amounts.append(amt)
+                participants.append(i)
+            else:
+                pending.append(i)
+    return render_template('settlement.html', amounts=amounts, participants=participants, pending=pending, hero=hero, gid=gid, balance=round(balance,2), colors=colors)
 
-    return render_template('settlement.html', settlements=settlements, hero=hero, gid=gid, balance=round(balance,2), colors=colors)
+@app.route('/create_checkout-session/<amount>/<gid>/<uid>/<fid>', methods=['GET'])
+def checkout_session(amount,gid,uid,fid):
+    pay = float(amount)
+    gid=int(gid)
+    uid=int(uid)
+    fid=int(fid)
+    print(f"pay: {pay}")
+    session = stripe.checkout.Session.create(
+        billing_address_collection='auto',
+        line_items=[{
+            'price_data': {
+                'currency': 'inr',
+                'product_data': {
+                    'name': 'Settle',
+                },
+                'unit_amount': int(pay*100),
+            },
+            'quantity': 1,
+        }],
+        mode='payment',
+        success_url=f"{request.url_root}success/{gid}/{uid}/{fid}/{pay}",
+        cancel_url=f"{request.url_root}failure/{gid}",
+    )
+    return redirect(session.url, code=303)
+
+@app.route('/success/<int:gid>/<int:uid>/<int:fid>/<amount>')
+def success(gid,uid,fid,amount):
+    amount=float(amount)
+    cur=mysql.connection.cursor()
+    cur.execute("INSERT INTO settled(gid,uid,fid,amount) VALUES (%s,%s,%s,%s)", (gid,uid,fid,amount, ))
+    mysql.connection.commit()
+    cur.close()
+    return redirect(url_for('settle', gid=gid, uid=uid))
+
+@app.route('/failure/<int:gid>')
+def failure(gid):
+    return render_template('failure.html', gid=gid)
 
 @app.route('/friends')
 def friends():  
@@ -576,6 +596,6 @@ def dashboard():
     return render_template('dashboard.html', amt_owed=amt_owed, amt_owes=amt_owes, paid=paid)
 
 if __name__ == '__main__':
-    app.run(debug=True, host="192.168.136.11")
+    app.run(debug=True)
 
 # host="192.168.0.164"
