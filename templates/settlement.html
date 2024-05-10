@@ -6,44 +6,55 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Settle</title>
     <link rel="stylesheet" href="{{url_for('static',filename='css/output.css')}}">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 
-<body>
-    <div class="container">
-        <header class="bg-accent text-white">
-            <div class="w-[59%] lg:w-[53%] flex justify-between items-center">
+<body class="bg-gray-200">
+    <div class="mx-auto">
+        <header class="bg-purple-700 text-white py-4 px-8">
+            <div class="flex items-center">
                 <a href="{{url_for('group_page', gid=gid)}}">
-                    <img class="h-8 w-8 m-2" src="{{url_for('static',filename='arrow-left.svg')}}" alt="">
+                    <img class="h-8 w-8 mr-3" src="{{url_for('static',filename='arrow-left.svg')}}" alt="Back">
                 </a>
-                <p class="text-xl font-semibold font-mont">Settle</p>
+                <h1 class="text-2xl font-semibold font-mont">Settle Debts</h1>
             </div>
         </header>
 
-        <div class="h-[25vh] flex flex-col justify-center space-y-3 items-center bg-white rounded-b-3xl shadow-lg">
-            <div class="bg-accent rounded-full h-14 w-14 flex justify-center items-center p-2">
-                <p class="text-2xl font-semibold text-white">{{hero.username[0].title()}}</p>
+        <div class="mt-8 rounded-xl shadow-lg p-6">
+            <div class="flex items-center space-x-4">
+                <div class="">
+                    <div class="bg-purple-700 rounded-full h-16 w-16 flex justify-center items-center text-white text-3xl font-semibold">
+                        {{hero.username[0].title()}}
+                    </div>
+                    <div class="container m-2">
+                        <h2 class="mt-4 text-xl font-semibold">{{hero.username.title()}}</h2>
+                        <p class="text-lg">Balance: INR.{{balance}}</p>
+                    </div>
+                </div>
             </div>
-            <p class="text-2xl font-medium">{{hero.username.title()}}</p>
-            <p class="text-xl">Balance: Rs.{{balance}}</p>
         </div>
 
-        <div class="m-6 bg-white flex flex-col rounded-xl shadow px-2 pt-3">
+        <div class="mt-8 bg-white rounded-xl shadow p-6">
             {% if settlements|length == 0 %}
-            <p class="text-[red] text-center text-lg mt-[-0.8rem]">No settlements pending !</p>
+            <p class="text-[red] text-lg font-semibold text-center">No settlements pending.</p>
             {% endif %}
-            {% for i in settlements %}
-            <div class="flex items-center mb-3 space-x-2">
-                <div class="bg-accent rounded-full h-10 w-10 flex justify-center items-center p-2">
-                    <p class="text-xl font-medium text-white">{{i[0].title()}}</p>
+            {% for username, amount in settlements.items() %}
+            <div class="flex items-center space-x-4 mt-4">
+                <div class="bg-purple-700 rounded-full h-10 w-12 flex justify-center items-center text-white text-lg font-semibold">
+                    {{username[0].title()}}
                 </div>
-
-                {% if settlements[i] > 0 %}
-                <p class="text-lg m-1"><span class="font-semibold">{{i.title()}}</span> <span class="px-1 border-2 rounded-xl border-slate-300 text-green-900">owes</span>  <span
-                        class="font-semibold">Rs.{{settlements[i]}}</span></p>
-                {% else %}
-                <p class="text-lg m-1"><span class="font-semibold">{{i.title()}}</span> is <span class="px-1 border-2 rounded-xl border-slate-300 text-[#DD2D4A]">owed</span> <span
-                        class="font-semibold">Rs.{{0-settlements[i]}}</span></p>
-                {% endif %}
+                <div>
+                    <p class="text-lg font-semibold">
+                        {% if amount > 0 %}
+                        You<span class="text-xl text-red-500 font-bold italic"> owe </span> INR.{{amount}}
+                        {% else %}
+                        {{username.title()}}<span class="text-xl text-green-500 font-bold italic"> owes </span>you INR.{{-amount}}
+                        {% endif %}
+                    </p>
+                </div>
+                <div>
+                    <a href=""><button class="bg-purple-700 text-white py-2 px-4 rounded-lg hover:bg-purple-800">Settle</button></a>
+                </div>
             </div>
             {% endfor %}
         </div>

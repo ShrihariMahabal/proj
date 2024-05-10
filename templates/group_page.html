@@ -94,8 +94,8 @@
                     <div class="mx-6 bg-white shadow rounded-xl flex flex-col">
                         {% for i in range(users|length) %}
                         <a href="{{url_for('settle', gid=gid, uid=users[i].uid)}}"
-                            class="flex space-x-5 items-center font-pop h-[3.5rem] relative border-b-2 border-slate-300 overflow-hidden">
-                            <img src="{{url_for('static',filename='user.svg')}}" class="h-8 w-8 ml-1">
+                            class="flex space-x-6 items-center font-pop h-[3.5rem] relative border-b-2 border-slate-300 overflow-hidden">
+                            <img src="{{url_for('static',filename='user.svg')}}" class="h-8 w-8 m-1">
                             <p class="text-lg font-medium font-mont">{{users[i].username}}</p>
                             <img src="{{url_for('static',filename='chevron-right.svg')}}"
                                 class="h-8 w-8 absolute right-4">
