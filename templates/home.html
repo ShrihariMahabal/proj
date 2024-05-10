@@ -9,6 +9,23 @@
     <link href="{{url_for('static',filename='css/output.css')}}" rel="stylesheet">
     <link rel="stylesheet" href="{{url_for('static',filename='css/index.css')}}">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        @keyframes slideRight {
+            0% {
+                transform: translateX(0);
+                opacity: 0.5;
+            }
+            100% {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+        
+        .slide-right {
+            animation: slideRight 0.3s ease;
+        }
+        
+    </style>
 </head>
 
 <body class="text-black bg-gray-200">
@@ -47,14 +64,23 @@
         </a>
         {% include 'nav.html' %}
         <script>
+            document.querySelectorAll('a').forEach(a => {
+                a.addEventListener('click', () => {
+                    document.querySelector('*').classList.add('slide-right');
+                });
+            });
+        </script>
+        <script>
             navButtons = document.querySelectorAll('.nav-btn');
             homebtn=document.getElementById("home");
+            accbtn=document.getElementById("acc");
             console.log("hi");
             navButtons.forEach(btn => {
                 btn.classList.remove('active');
             });
             homebtn.classList.add('active');
         </script>
+        
     </div>
 </body>
 

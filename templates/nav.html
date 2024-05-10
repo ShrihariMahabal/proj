@@ -11,7 +11,7 @@
         <img class="h-[1.7rem] w-[1.7rem]" src="{{url_for('static',filename='bar-chart-4.svg')}}" alt="">
         <p class="text-sm">Dashboard</p>
     </a>
-    <a href="{{url_for('account')}}" class="nav-btn">
+    <a href="{{url_for('account')}}" class="nav-btn" id="acc">
         <img class="h-[1.7rem] w-[1.7rem]" src="{{url_for('static',filename='circle-user-round.svg')}}" alt="">
         <p class="text-sm">Account</p>
     </a>
@@ -27,6 +27,8 @@
         if (activeButtonIndex !== null) {
             navButtons[activeButtonIndex].classList.add('active');
         }
+        accbtn=document.getElementById("acc");
+        accbtn.classList.remove('active');
 
         navButtons.forEach((button, index) => {
             button.addEventListener('click', function () {

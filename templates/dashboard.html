@@ -9,6 +9,23 @@
     <link rel="stylesheet" href="{{url_for('static',filename='css/index.css')}}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        @keyframes slideRight {
+            0% {
+                transform: translateX(0);
+                opacity: 0.5;
+            }
+            100% {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+        
+        .slide-right {
+            animation: slideRight 0.3s ease;
+        }
+        
+    </style>
 </head>
 
 <body class="bg-gray-200">
@@ -120,6 +137,13 @@
 
         {% include 'nav.html' %}
     </div>
+    <script>
+        document.querySelectorAll('a').forEach(a => {
+            a.addEventListener('click', () => {
+                document.querySelector('*').classList.add('slide-right');
+            });
+        });
+    </script>
 </body>
 
 </html>
