@@ -44,7 +44,7 @@
 
 <body class="font-['Poppins',sans-serif]">
     <div class="intro-page bg-gray-100 flex flex-col items-center justify-center h-screen">
-        <header class="absolute top-10 py-4">
+        <header class="relative top-10 pb-10 pt-20">
             <h1 class="text-5xl font-bold text-purple-700">SplitIt</h1>
             <h3 class="text-xl text-gray-600 pt-2 text-center">A collaborative expense tool</h3>
         </header>
@@ -58,7 +58,7 @@
                         <img class="w-24 h-24 mx-auto mb-2"
                             src="https://tse1.mm.bing.net/th?id=OIP.8olTrvrATUNDXSYrRUNFkgHaHa&pid=Api&P=0&h=180"
                             alt="Split bills image">
-                        <h2 class="text-2xl font-bold text-black">Split bills, not friendship</h2>
+                        <h2 class="text-2xl font-bold text-center text-black">Split bills, not friendship</h2>
                         <span class="text-center text-gray-500">Fairly split your shared expenses to save money while keeping your
                             friendship healthy!</span>
                     </div>
@@ -66,7 +66,7 @@
                         <img class="w-24 h-24 mx-auto mb-2"
                             src="https://tse1.mm.bing.net/th?id=OIP.coto-VxHflQEs78_FFU4OgHaGD&pid=Api&P=0&h=180"
                             alt="Track balances image">
-                        <h2 class="text-2xl font-bold text-black">Track balances effortlessly</h2>
+                        <h2 class="text-2xl font-bold text-center text-black">Track balances effortlessly</h2>
                         <span class="text-center text-gray-500">Track who owes what with ease.</span>
                     </div>
                     <div class="swiper-slide px-3 py-8 flex flex-col items-center justify-center space-y-4">
@@ -79,7 +79,7 @@
                     <div class="swiper-slide px-3 py-8 flex flex-col items-center justify-center space-y-4">
                         <img class="w-24 h-24 mx-auto mb-2"
                             src="https://framerusercontent.com/images/0MwMXSGdRzUoPAh1O6HaDq1k.png" alt="Go Dutch image">
-                        <h2 class="text-2xl font-bold text-black">Analyze your expenses</h2>
+                        <h2 class="text-2xl font-bold text-center text-black">Analyze your expenses</h2>
                         <span class="text-center text-gray-500">Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum, quas.</span>
                     </div>
                 </div>
@@ -88,8 +88,8 @@
                 <div class="swiper-button-next opacity-0"></div>
             </div>
         </div>
-        <div class="buttons mt-10 flex justify-center space-x-4">
-            <a href="{{url_for('register')}}" class="px-4 py-3 bg-white border-2 border-black text-black font-bold text-xl rounded-lg shadow-xl hover:bg-purple-100">Get
+        <div class="buttons py-10 flex justify-center space-x-4">
+            <a href="{{url_for('register')}}" class="px-4 py-3 bg-white border-2 border-black text-black font-bold text-xl text-center rounded-lg shadow-xl hover:bg-purple-100">Get
                 Started</a>
             <a href="{{url_for('login')}}" class="px-6 py-3 bg-black text-white font-bold text-xl rounded-lg shadow-md hover:bg-purple-700">Login</a>
         </div>
@@ -99,7 +99,7 @@
     <script>
         var swiper = new Swiper('.swiper', {
             autoplay: {
-                delay: 3000, 
+                delay: 2000, 
             },
             navigation: {
                 nextEl: '.swiper-button-next',
