@@ -620,6 +620,10 @@ def payment_chart(gid):
         total_payment+=chart_data[idx]['amount']
     return render_template('payment_chart.html',chart_data=chart_data,group_name=group_name,gid=gid,total_payment=total_payment,invite_code=invite_code)
 
+@app.route('/service-worker.js')
+def sw():
+    return app.send_static_file('service-worker.js')
+
 if __name__ == '__main__':
     app.run(debug=True, host="192.168.0.164")
 
