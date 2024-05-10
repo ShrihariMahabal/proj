@@ -8,28 +8,32 @@
     <link href="{{url_for('static',filename='css/output.css')}}" rel="stylesheet">
     <link rel="stylesheet" href="{{url_for('static',filename='css/index.css')}}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 
 <body>
-    <div class="container">
-        <div class="flex justify-start items-center">
+    <div class="bg-gray-200 container">
+        <header class="p-2 mb-8 flex justify-between items-center bg-purple-700 text-white">
             <a href="{{url_for('home')}}">
-                <img class="h-8 w-8 m-2" src="{{url_for('static',filename='arrow-left-black.svg')}}" alt="">
+                <svg class="h-8 w-8" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                    style="fill: rgba(255, 255, 255, 1);">
+                    <path d="M21 11H6.414l5.293-5.293-1.414-1.414L2.586 12l7.707 7.707 1.414-1.414L6.414 13H21z"></path>
+                </svg>
             </a>
-        </div>
+        </header>
 
         <div class="grp-info-container flex justify-center">
             <div class="grp-info flex space-x-6">
-                <img class="w-[5rem] h-[5rem]" src="{{url_for('static',filename='icons8-group-96.png')}}" alt="">
+                <img class="mr-3 w-[6rem] h-[6rem]" src="{{url_for('static',filename='icons8-group-96.png')}}" alt="">
                 <div class="flex flex-col justify-center">
                     <h1 class="font-mont font-bold text-2xl">{{group_name}}</h1>
                     <div class="copy-text">
                         <p class="invite-heading text-md">Invite Code:</p>
-                        <div class="invite-text flex border-[1px] border-black rounded-lg mb-3 mt-1">
+                        <div class="invite-text flex border-[1px] border-black rounded-lg p-1 mb-3 mt-1">
                             <input class="rounded-lg text-[#555] text-sm text-center" size="3" type="text" id="txt"
                                 value="{{invite_code}}" readonly>
                             <button
-                                class="relative flex justify-center items-center bg-accent rounded-lg p-1 active:bg-[#809ce2] before:content-['Copied'] before:absolute before:top-[-2.2rem] before:right--1 before:bg-[#5c81dc] before:px-1 before:rounded-lg before:text-white before:hidden  cpy-btn">
+                                class="relative flex justify-center items-center bg-purple-700 rounded-lg p-1 active:bg-[#809ce2] before:content-['Copied'] before:absolute before:top-[-2.2rem] before:right--1 before:bg-[#5c81dc] before:px-1 before:rounded-lg before:text-white before:hidden  cpy-btn">
                                 <img src="{{url_for('static',filename='copy.svg')}}" alt="">
                             </button>
                         </div>
@@ -38,12 +42,13 @@
             </div>
         </div>
 
-        <div class="container1 w-full flex flex-col mt-2">
+        <div class="container1 w-full flex flex-col mt-6">
             <div class="tab-box self-center relative">
                 <button class="tab-btn active text-md">Expenses</button>
                 <button class="tab-btn text-md">Settlements</button>
+                <a href="{{url_for('payment_chart',gid=gid)}}" class="tab-btn text-md">Payment Chart</a>
                 <div
-                    class="line absolute top-7 h-[5px] w-[90px] left-[30px] lg:left-[76px] bg-black transition-all ease-in-out delay-150">
+                    class="line absolute top-7 h-[5px] w-[90px] left-0 lg:left-[76px] bg-black transition-all ease-in-out delay-150">
                 </div>
             </div>
 
@@ -107,11 +112,24 @@
         </div>
 
         <a href="{{url_for('add_expense2', gid=gid)}}"
-            class="bg-accent rounded-full p-4 flex justify-center items-center fixed bottom-[5rem] right-5">
-            <img src="{{url_for('static',filename='plus.svg')}}" alt="">
+            class="bg-purple-700 rounded-xl p-3 flex justify-center items-center fixed bottom-[5rem] right-5">
+            <h2 class="text-white text-lg font-semibold">+Add expense</h2>
         </a>
         {% include 'nav.html' %}
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const colors = ['bg-green-600', 'bg-blue-600', 'bg-red-600', 'bg-yellow-600', 'bg-purple-600', 'bg-pink-600'];
+
+            const profileInitials = document.querySelectorAll('.rounded-full');
+
+            profileInitials.forEach((initial, index) => {
+                const colorIndex = index % colors.length;
+                initial.classList.add(colors[colorIndex]);
+                initial.innerHTML = initial.innerHTML.trim().charAt(0).toUpperCase();
+            });
+        });
+    </script>
     <script>
         const copySvgUrl = "{{url_for('static', filename='copy.svg')}}";
         const copiedUrl = "{{url_for('static', filename='check.svg')}}";

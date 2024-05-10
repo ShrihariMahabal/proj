@@ -5,61 +5,70 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Friends Settle</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{url_for('static',filename='css/output.css')}}">
 </head>
 
-<body>
-    <div class="container">
-        <header class="bg-accent text-white">
-            <div class="w-[59%] lg:w-[53%] flex justify-between items-center">
+<body class="bg-gray-200">
+    <div class="container mx-auto">
+        <!-- Header -->
+        <header class="bg-purple-700 text-white py-4">
+            <div class="flex items-center">
                 <a href="{{url_for('friends')}}">
-                    <img class="h-[2.7rem] w-[2.7rem] m-2" src="{{url_for('static',filename='arrow-left.svg')}}" alt="">
+                    <img class="ml-1 h-8 w-8 mr-2" src="{{url_for('static',filename='arrow-left.svg')}}" alt="">
                 </a>
-                <p class="text-2xl font-semibold font-mont">Settle</p>
+                <p class="text-2xl font-semibold font-mont">Settle with friends</p>
             </div>
         </header>
 
-        <div class="h-[25vh] flex flex-col justify-center space-y-4 items-center bg-white rounded-b-3xl shadow-lg">
-            <div class="bg-accent rounded-full h-14 w-14 flex justify-center items-center p-2">
-                <p class="text-2xl font-semibold text-white">{{name['username'][0].title()}}</p>
+        <!-- User Info -->
+        <div class="bg-white rounded-b-3xl shadow-lg py-8 px-6 md:px-12 lg:px-16 xl:px-20">
+            <div class="flex justify-center items-center">
+                <div class="bg-purple-700 rounded-full h-20 w-20 flex justify-center items-center">
+                    <p class="text-4xl font-semibold text-white">{{name['username'][0].title()}}</p>
+                </div>
             </div>
-            <p class="text-2xl font-medium">{{name['username'].title()}}</p>
-            {% if amt_owed>amt_owes %}
-            <p class="text-xl">Amount You are Owed: Rs.{{amt_owed-amt_owes}}</p>
-            {% elif amt_owes>amt_owed %}
-            <p class="text-xl">Amount You Owe: Rs.{{amt_owes-amt_owed}}</p>
-            {% else %}
-            <p class="text-xl">All Balances Settled</p>
-            {% endif%}
+            <div class="text-center mt-4">
+                <p class="text-2xl font-medium">{{name['username'].title()}}</p>
+                <p class="text-lg text-gray-600">Amount You are Owed: Rs.{{amt_owed}}</p>
+                <p class="text-lg text-gray-600">Amount You Owe: Rs.{{amt_owes}}</p>
+                {% if amt_owed>amt_owes %}
+                <p class="text-lg text-gray-600">Overall You are Owed Amount: Rs.{{ "%0.2f" | format(amt_owed-amt_owes) }}</p>
+                {% elif amt_owes>amt_owed %}
+                <p class="text-lg text-gray-600">Overall You Owe Amount: Rs.{{"%0.2f" | format(amt_owes-amt_owed) }}</p>
+                {% else %}
+                <p class="text-lg text-gray-600">All Balances Settled</p>
+                {% endif%}
+            </div>
         </div>
 
+        <!-- Groups -->
         {% for i in list_gid %}
-            <div class="m-6 bg-white flex flex-col rounded-xl shadow px-2 pt-3">
-                <h2 class="text-2xl mb-2 font-semibold">Group Name: {{ list_gid[i] }}</h2>
+        <div class="mt-8">
+            <div class="px-4 md:px-8 py-6">
+                <h2 class="px-4 text-2xl mb-4 font-bold">Group Name: <span class="text-purple-700">{{ list_gid[i] }}</span></h2>
                 {% for entry in list %}
-                    {% if entry.gid == i %}
-                        <div class="flex items-center mb-3 space-x-2">
-                            <div class="bg-accent rounded-full h-10 w-10 flex justify-center items-center p-2">
-                                <p class="text-xl font-medium text-white">{{ list_gid[i][0].title() }}</p>
-                            </div>
-                            {% if entry.payer==user and entry.fid==friend_id %}
-                                <p class="text-lg m-1">
-                                <!-- <span class="font-semibold">{{ entry.gid }}</span> -->
-                                <span class="px-1 border-2 rounded-xl border-slate-300 text-green-900">owes you</span>
-                                <span class="font-semibold">Rs.{{ entry.amt }}</span>
-                                <span class="font-semibold">for {{ entry.description }}</span>
-                            {% elif entry.payer==friend_id and entry.fid==user %}
-                                <p class="text-lg m-1">
-                                <!-- <span class="font-semibold">{{ entry.gid }}</span> -->
-                                <span class="px-1 border-2 rounded-xl border-slate-300 text-green-900">you owe</span>
-                                <span class="font-semibold">Rs.{{ entry.amt }}</span>
-                                <span class="font-semibold">for {{ entry.description }}</span>
-                            {% endif %}
-                        </p>
-                        </div>
-                    {% endif %}
+                {% if entry.gid == i %}
+                <div class="flex items-center mb-3 px-4 py-4 shadow-xl">
+                    <div class="bg-purple-700 rounded-full h-12 w-12 flex justify-center items-center">
+                        <p class="text-xl font-medium text-white">{{ name['username'][0].title() }}</p>
+                    </div>
+                    <p class="text-lg ml-4">
+                        {% if entry.payer==user and entry.fid==friend_id %}
+                        <span class="px-2 bg-green-500 text-white rounded-full">owes you</span>
+                        <span class="font-semibold">Rs.{{ entry.amt }}</span>
+                        <span class="font-semibold">for {{ entry.description }}</span>
+                        {% elif entry.payer==friend_id and entry.fid==user %}
+                        <span class="px-2 bg-green-500 text-white rounded-full">you owe</span>
+                        <span class="font-semibold">Rs.{{ "%0.2f" | format(entry.amt) }}</span>
+                        <span class="font-semibold">for {{ entry.description }}</span>
+                        {% endif %}
+                    </p>
+                </div>
+                {% endif %}
                 {% endfor %}
             </div>
+        </div>
         {% endfor %}
     </div>
 </body>

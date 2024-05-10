@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group Page</title>
+    <link href="{{url_for('static',filename='css/output.css')}}" rel="stylesheet">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/index.css')}}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        #myPieChart {
+            max-width: 100%;
+            max-height: 100%;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-200">
+    <div class="bg-white container">
+        <header class="p-2 mb-8 flex justify-between items-center bg-purple-700 text-white">
+            <a class="flex items-center" href="{{url_for('group_page', gid=gid)}}">
+                <svg class="h-6 w-6 float-left mr-2" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" style="fill: rgba(255, 255, 255, 1);"><path d="M21 11H6.414l5.293-5.293-1.414-1.414L2.586 12l7.707 7.707 1.414-1.414L6.414 13H21z"></path></svg>
+                <h1 class="text-white font-semibold text-lg">Back to groups</h1>
+            </a>
+        </header>
+        
+    </div>
+        <div class=" container">
+            <div class="my-3 mx-4 flex justify-between">
+                <h1 class="font-mont m-4 mb-6 font-semibold text-[1.7rem]" >Group Members Payment Chart</h1>
+              </div>
+    
+            <div class="h-[25vh] flex flex-col justify-center space-y-4 items-center rounded-b-3xl" >
+                <canvas id="myPieChart"></canvas>
+            </div>
+    
+            <div class="h-[25vh] flex flex-col justify-center items-center rounded-b-3xl bg-gray-100 shadow-lg p-6">
+                <h2 class="font-semibold text-2xl text-gray-800 mb-4 text-center">Total Amount Paid in the Group: <span class="text-purple-700">INR.{{total_payment}}</span></h2>
+            </div>
+            
+    
+    
+        </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const ctxp = document.getElementById('myPieChart');
+                const chart_data = JSON.parse('{{ chart_data | tojson | safe }}');
+        
+                // Object to store accumulated amounts for each payer username
+                const amountsByUser = {};
+
+                // Loop through the chart data and accumulate amounts for each payer username
+                chart_data.forEach(data => {
+                    const username = data.username;
+                    const amount = data.amount;
+                    if (amountsByUser.hasOwnProperty(username)) {
+                        amountsByUser[username] += amount;
+                    } else {
+                        amountsByUser[username] = amount;
+                    }
+                });
+
+                const labels = Object.keys(amountsByUser);
+                const amounts = Object.values(amountsByUser);
+        
+                new Chart(ctxp, {
+                    type: 'pie',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Total Amount Paid',
+                            data: amounts,
+                            backgroundColor: [
+                                'rgb(255, 99, 132)',
+                                'rgb(54, 162, 235)',
+                                'rgb(255, 205, 86)',
+                                'rgb(205, 205, 255)',
+                                'rgb(86, 205, 86)',
+                                'rgb(162, 162, 86)',
+                                'rgb(132, 205, 99)',
+                                'rgb(54, 235, 86)'
+                            ],
+                            hoverOffset: 4
+                        }]
+                    },
+                });
+            });
+        </script>
+
+        {% include 'nav.html' %}
+    </div>
+</body>
+
+</html>

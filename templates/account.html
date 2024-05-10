@@ -7,51 +7,49 @@
     <title>Account</title>
     <link href="{{url_for('static',filename='css/output.css')}}" rel="stylesheet">
     <link rel="stylesheet" href="{{url_for('static',filename='css/index.css')}}">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 
-<body>
-    <div class="container">
-        {% include 'header.html' %}
-        <div class="mt-6 flex flex-col">
-            <div class="h-[25vh] flex flex-col justify-center space-y-4 items-center bg-white rounded-b-3xl shadow-lg">
-                <div class="bg-accent rounded-full h-14 w-14 flex justify-center items-center p-2">
-                    <p class="text-2xl font-semibold text-white">{{user['username'][0].title()}}</p>
+<body class="bg-gray-200">
+    <div class="container mx-auto">
+        <div class="bg-purple-700 p-4 flex items-center">
+            <a href="{{url_for('home')}}"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" style="fill: rgba(255, 255, 255, 1);transform: ;msFilter:;"><path d="M21 11H6.414l5.293-5.293-1.414-1.414L2.586 12l7.707 7.707 1.414-1.414L6.414 13H21z"></path></svg></a>
+            <h1 class="ml-4 text-2xl font-bold text-white text-center">Profile</h1>
+        </div>
+        <div class="bg-white rounded-b-lg p-6 shadow-lg">
+            <div class="flex items-center mb-6">
+                <svg class="h-16 w-16 mr-5" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>profile [#1341]</title> <desc>Created with Sketch.</desc> <defs> </defs> <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"> <g id="Dribbble-Light-Preview" transform="translate(-180.000000, -2159.000000)" fill="#000000"> <g id="icons" transform="translate(56.000000, 160.000000)"> <path d="M134,2008.99998 C131.783496,2008.99998 129.980955,2007.20598 129.980955,2004.99998 C129.980955,2002.79398 131.783496,2000.99998 134,2000.99998 C136.216504,2000.99998 138.019045,2002.79398 138.019045,2004.99998 C138.019045,2007.20598 136.216504,2008.99998 134,2008.99998 M137.775893,2009.67298 C139.370449,2008.39598 140.299854,2006.33098 139.958235,2004.06998 C139.561354,2001.44698 137.368965,1999.34798 134.722423,1999.04198 C131.070116,1998.61898 127.971432,2001.44898 127.971432,2004.99998 C127.971432,2006.88998 128.851603,2008.57398 130.224107,2009.67298 C126.852128,2010.93398 124.390463,2013.89498 124.004634,2017.89098 C123.948368,2018.48198 124.411563,2018.99998 125.008391,2018.99998 C125.519814,2018.99998 125.955881,2018.61598 126.001095,2018.10898 C126.404004,2013.64598 129.837274,2010.99998 134,2010.99998 C138.162726,2010.99998 141.595996,2013.64598 141.998905,2018.10898 C142.044119,2018.61598 142.480186,2018.99998 142.991609,2018.99998 C143.588437,2018.99998 144.051632,2018.48198 143.995366,2017.89098 C143.609537,2013.89498 141.147872,2010.93398 137.775893,2009.67298" id="profile-[#1341]"> </path> </g> </g> </g> </g></svg>
+                <div>
+                    <p class="text-2xl font-semibold text-gray-800">{{user['username'].title()}}</p>
+                    <p class="text-lg text-gray-600">{{user['email']}}</p>
                 </div>
-                <p class="text-2xl font-medium">{{user['username'].title()}}</p>
-                <p class="text-xl">Your Account</p>
-                <p class="text-xl">Total Amount You Are Owed: Rs.{{amt_owed}}</p>
-                <p class="text-xl">Total Amount You Owe: Rs.{{amt_owes}}</p>
             </div>
-            <!-- <div class="mb-3 mx-4 flex justify-between">
-                <h1 class="font-mont font-semibold text-[1.7rem]">Your Account</h1>
-            </div> -->
-            <div class="group-card selection:bg-gray-400">
-                <div class="flex flex-col space-y-1">
-                    <h1 class="font-semibold font-pop text-xl">Your Username: {{user['username']}}</h1>
-                    <h1 class="font-semibold font-pop text-xl">Your Email: {{user['email']}}</h1>
-                </div>  
-            </div> 
-            <a href="{{url_for('edit_username')}}" class="group-card selection:bg-gray-400">
-                <div class="flex flex-col space-y-1">
-                    <h1 class="font-semibold font-pop text-xl">Edit Username</h1>
-                </div>  
-            </a>
-            <a href="{{url_for('edit_password')}}" class="group-card selection:bg-gray-400">
-                <div class="flex flex-col space-y-1">
-                    <h1 class="font-semibold font-pop text-xl">Edit Password</h1>
-                </div>  
-            </a>
-            <div class="group-card selection:bg-gray-400">
-                <div class="flex flex-col space-y-1">
-                    <a href="{{url_for('logout')}}" style="margin-left: auto;">
-                        <button type="button" class="btn btn-outline-logout rounded-lg bg-white text-black p-2" id="logout">Logout</button>
-                    </a>
-                </div>  
+
+            <div class="grid grid-cols-1 md:grid-cols-2">
+                <div class="p-4">
+                    <p class="text-lg font-semibold mb-2">Total Amount You Are Owed</p>
+                    <p class="text-lg text-purple-700 font-semibold">INR.{{amt_owed}}</p>
+                </div>
+                <div class="p-4">
+                    <p class="text-lg font-semibold mb-2">Total Amount You Owe</p>
+                    <p class="text-lg text-purple-700 font-semibold">INR.{{amt_owes}}</p>
+                </div>
             </div>
         </div>
-
-        {% include 'nav.html' %}
-        </a>
+        <div class="m-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <a href="{{url_for('edit_username')}}" class="border border-purple-700 text-purple-700 rounded-lg p-4 flex items-center justify-center hover:shadow-lg transition duration-300 ease-in-out">
+                <span class="text-lg font-semibold">Edit Username</span>
+            </a>
+            <a href="{{url_for('edit_password')}}" class="border border-purple-700 text-purple-700 rounded-lg p-4 flex items-center justify-center hover:shadow-lg transition duration-300 ease-in-out">
+                <span class="text-lg font-semibold">Edit Password</span>
+            </a>
+            <a href="{{url_for('logout')}}" class="bg-purple-700 text-white rounded-lg p-4 flex items-center justify-center hover:shadow-lg transition duration-300 ease-in-out">
+                <span class="text-lg font-semibold">Logout</span>
+            </a>
+        </div>
+        <div class="footer mt-10 py-4 text-center text-gray-600 text-sm">
+            <p>&copy; 2024 SplitIt. All rights reserved.</p>
+        </div>
     </div>
 </body>
 

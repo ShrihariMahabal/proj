@@ -7,40 +7,65 @@
     <title>Welcome</title>
     <link href="{{url_for('static',filename='css/output.css')}}" rel="stylesheet">
     <link rel="stylesheet" href="{{url_for('static',filename='css/index.css')}}">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 
 <body>
-    <div class="container">
+    <div class="container bg-gray-100">
         {% include 'header.html' %}
-        <div class="mt-6 flex flex-col">
-            <div class="h-[25vh] flex flex-col justify-center space-y-4 items-center bg-white rounded-b-3xl shadow-lg">
-                <div class="bg-accent rounded-full h-14 w-14 flex justify-center items-center p-2">
-                    <p class="text-2xl font-semibold text-white">{{name[0].title()}}</p>
+        <div class="flex flex-col">
+            <div class="pt-8 h-[30vh] flex flex-col items-center text-gray-500 bg-white p-4 mb-6">
+                <div class="flex items-center justify-start space-x-4 relative right-14">
+                    <div class="bg-purple-700 rounded-full h-14 w-14 flex justify-center items-center p-2">
+                        <p class="text-2xl font-semibold text-white">{{name[0].title()}}</p>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-semibold text-black">{{name.title()}}</p>
+                    </div>
                 </div>
-                <p class="text-2xl font-medium">{{name.title()}}</p>
+                <div class="mt-4 text-center">
+                    <p class="text-lg px-3">Manage your friends and settle dues with ease. Click on your friend's card to get started.</p>
+                </div>
             </div>
-            <div class="mb-3 mx-4 flex justify-between">
-                <h1 class="font-mont font-semibold text-[1.7rem]">Your Friends</h1>
+            
+            <div class="mb-1 mx-4">
+                <h1 class="font-bold text-[1.7rem] text-center text-purple-700">Your Friends</h1>
             </div>
             {% if not friends %}
                 <p class="text-textgray mx-4 text-center text-2xl">No Friends yet !</p>
             {% endif %}
             {% for i in range(friends|length) %}
-            <a href="{{url_for('friend_settle', friend_id=friends[i].friend_id)}}" class="group-card selection:bg-gray-400">
-                <img class="h-[4rem] w-[4rem]" src="{{url_for('static',filename='icons8-purchase-order-96.png')}}" alt="">
-                <div class="flex flex-col space-y-1">
+            <a href="{{url_for('friend_settle', friend_id=friends[i].friend_id)}}" class="px-6 py-2 group-card selection:bg-gray-400">
+                <div class="rounded-full h-10 w-10 flex justify-center items-center text-white text-lg font-semibold mr-3" id="friendsss">
+                    {{friends[i].username[0].upper()}}
+                </div>
+                <div class="flex flex-col space-y-[0.8]">
                     <h1 class="font-semibold font-pop text-xl">{{friends[i].username}}</h1>
+                    <p class="text-gray-500 text-md">Click to settle dues with {{friends[i].username}}</p>
                 </div>
             </a>
             {% endfor %}
-            <div class="btn-container mt-2 flex justify-center space-x-2">
-                <a href="{{url_for('add_friend')}}" class="btn-primary p-2 font-semibold">ADD FRIEND</a>
+            <div class="mt-2 flex justify-center space-x-2">
+                <a href="{{url_for('add_friend')}}" class="p-2 font-semibold"><button class="bg-purple-700 rounded-3xl p-3 px-5 text-white">Add a Friend</button></a>
             </div>
         </div>
 
         {% include 'nav.html' %}
         </a>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const colors = ['bg-green-600', 'bg-blue-600', 'bg-red-600', 'bg-yellow-600', 'bg-purple-600', 'bg-pink-600'];
+
+            const profileInitials = document.querySelectorAll('.rounded-full');
+
+            profileInitials.forEach((initial, index) => {
+                const colorIndex = index % colors.length;
+                initial.classList.add(colors[colorIndex]);
+                
+            });
+        });
+    </script>
 </body>
 
 </html>

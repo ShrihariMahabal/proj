@@ -1,11 +1,11 @@
-<nav class="fixed bottom-0 flex w-full justify-between items-center pt-2 z-100 bg-gray-100">
-    <a href="{{url_for('home')}}" class="nav-btn active">
+<nav class="fixed bottom-0 flex w-full justify-between items-center py-2 z-100 bg-white">
+    <a href="{{url_for('home')}}" id="home" class="nav-btn">
         <img class="h-[1.7rem] w-[1.7rem]" src="{{url_for('static',filename='home.svg')}}" alt="">
         <p class="text-sm">Home</p>
     </a>
     <a href="{{url_for('friends')}}" class="nav-btn">
-        <img class="h-[2.5rem] w-[2.5rem]" src="{{url_for('static',filename='friends.png')}}" alt="">
-        <p>Friends</p>
+        <img class="h-[1.7rem] w-[1.7rem]" src="{{url_for('static',filename='friends.png')}}" alt="">
+        <p class="text-sm">Friends</p>
     </a>
     <a href="{{url_for('dashboard')}}" class="nav-btn">
         <img class="h-[1.7rem] w-[1.7rem]" src="{{url_for('static',filename='bar-chart-4.svg')}}" alt="">
@@ -16,3 +16,31 @@
         <p class="text-sm">Account</p>
     </a>
 </nav>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const navButtons = document.querySelectorAll('.nav-btn');
+
+        // Check if there's a stored active button
+        const activeButtonIndex = localStorage.getItem('activeButtonIndex');
+
+        // If there's a stored active button, add active class to it
+        if (activeButtonIndex !== null) {
+            navButtons[activeButtonIndex].classList.add('active');
+        }
+
+        navButtons.forEach((button, index) => {
+            button.addEventListener('click', function () {
+                // Remove active class from all buttons
+                navButtons.forEach(btn => {
+                    btn.classList.remove('active');
+                });
+
+                // Add active class to the clicked button
+                button.classList.add('active');
+
+                // Store the index of the active button in localStorage
+                localStorage.setItem('activeButtonIndex', index);
+            });
+        });
+    });
+</script>

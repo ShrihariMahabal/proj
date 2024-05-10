@@ -6,11 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Username</title>
     <link href="{{url_for('static',filename='css/output.css')}}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 
 <body>
     <!-- <div class="backdrop hidden fixed bg-[rgba(0,0,0,0.5)] top-0 h-[100vh] w-full z-10"></div> -->
-    <div class="container h-[100vh] w-full flex justify-center items-center">
+    <div class="bg-gray-300 container h-[100vh] w-full flex justify-center items-center">
         <div class="modal fixed z-10 flex flex-col justify-between items-center font-['Poppins',sans-serif] bg-white rounded-xl px-5 py-8 shadow-2xl">
             <h1 class="font-bold text-2xl mt-3 mb-5">Edit Username</h1>
             <form action="{{url_for('edit_username')}}" method="post" class="flex flex-col w-[20rem]">
@@ -20,8 +21,8 @@
                 {% if error %}
                 <p class="text-[red]">{{error}}</p>
                 {% endif %}
-                <button type="submit" class="btn-primary my-3">
-                    <p class="font-semibold">Submit</p>
+                <button type="submit" class="border border-purple-700 p-1 rounded-2xl bg-purple-700 my-3 text-white">
+                    <p class="font-semibold">Confirm</p>
                 </button>
                 <a class="btn-secondary" href="{{url_for('account')}}">Cancel</a>
             </form>

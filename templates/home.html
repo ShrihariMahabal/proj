@@ -5,40 +5,57 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome</title>
+    <link href="{{url_for('static',filename='css/input.css')}}" rel="stylesheet">
     <link href="{{url_for('static',filename='css/output.css')}}" rel="stylesheet">
     <link rel="stylesheet" href="{{url_for('static',filename='css/index.css')}}">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 
-<body>
-    <div class="container">
+<body class="text-black bg-gray-200">
+    <div class="container mx-auto bg-white rounded-lg">
         {% include 'header.html' %}
 
-        <div class="mt-6 flex flex-col">
-            <div class="mb-3 mx-4 flex justify-between">
-                <h1 class="font-mont font-semibold text-[1.7rem]">Your Groups</h1>
+        <div class="text-center mt-6 p-8">
+            <h1 class="font-semibold text-xl mt-6 mb-2 text-center">Hello, {{username}}</h1>
+            <h1 class="text-4xl font-bold mb-4">Welcome to <span class="text-purple-700">SplitIt</span>!</h1>
+            <p class="text-xl text-gray-500">Where managing expenses is fun and easy.</p>
+        </div>
+        
+        <div class="container mt-6 flex flex-col p-6 bg-gray-200">
+            <div class="mb-3 flex justify-between">
+                <h1 class="font-semibold text-2xl">Your Groups</h1>
             </div>
             {% if not groups %}
-                <p class="text-textgray mx-4 text-center text-2xl">No groups yet !</p>
+                <p class="text-gray-600 text-lg text-center">No groups yet!</p>
             {% endif %}
             {% for i in range(groups|length) %}
-            <a href="{{url_for('group_page', gid=groups[i].gid)}}" class="active:bg-gray-300 group-card selection:bg-gray-400">
-                <img class="h-[3rem] w-[3rem]" src="{{url_for('static',filename='icons8-purchase-order-96.png')}}" alt="">
-                <div class="flex flex-col">
-                    <h1 class="font-semibold font-pop text-lg">{{groups[i].group_name}}</h1>
-                    <p class="text-textgray text-lg font-mont">Total Spent: Rs.<span class="font-semibold">{{costs[i]}}</span></p>
+            <a href="{{url_for('group_page', gid=groups[i].gid)}}" class="shadow-lg group-card flex items-center space-x-4 bg-gray-100 rounded-lg p-4 mb-4">
+                <img class="h-12 w-12" src="{{url_for('static',filename='icons8-purchase-order-96.png')}}" alt="Group Icon">
+                <div>
+                    <h3 class="font-semibold text-lg">{{groups[i].group_name}}</h3>
+                    <p class="text-gray-600">Total Spent: Rs. <span class="font-semibold">{{costs[i]}}</span></p>
                 </div>
             </a>
             {% endfor %}
-            <div class="btn-container mt-2 flex justify-center space-x-2">
-                <a href="{{url_for('create_group')}}" class="btn-primary p-2 text-sm font-semibold">ADD GROUP</a>
-                <a href="{{url_for('join_group')}}" class="btn-secondary p-2 text-sm font-semibold">JOIN GROUP</a>
+            <div class="flex justify-center space-x-2 mt-4">
+                <a href="{{url_for('create_group')}}" class="btn-primary inline-block bg-purple-700 hover:bg-purple-800 text-white font-semibold py-2 px-4 rounded-lg">ADD GROUP</a>
+                <a href="{{url_for('join_group')}}" class="btn-secondary inline-block bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-lg">JOIN GROUP</a>
             </div>
         </div>
 
-        {% include 'nav.html' %}
-        <a href="{{url_for('create_group')}}" class="bg-accent rounded-full p-4 flex justify-center items-center absolute bottom-[4.2rem] right-5">
-                    <img src="static/plus.svg" alt="">
+        <a href="{{url_for('create_group')}}" class="bg-purple-700 rounded-full p-4 flex justify-center items-center absolute bottom-20 right-5">
+            <img src="static/plus.svg" alt="Add Group">
         </a>
+        {% include 'nav.html' %}
+        <script>
+            navButtons = document.querySelectorAll('.nav-btn');
+            homebtn=document.getElementById("home");
+            console.log("hi");
+            navButtons.forEach(btn => {
+                btn.classList.remove('active');
+            });
+            homebtn.classList.add('active');
+        </script>
     </div>
 </body>
 
