@@ -5,18 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Expense</title>
     <link rel="stylesheet" href="{{url_for('static',filename='css/output.css')}}">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    
 </head>
 <body>
     <div class="container">
         <form action="#" method="POST">
-            <header class="flex justify-between items-center bg-accent text-white">
+            <header class="flex items-center bg-purple-700 text-white">
                 <a href="{{url_for('group_page', gid=gid)}}">
-                    <img class="h-8 w-8 m-2" src="{{url_for('static',filename='arrow-left.svg')}}" alt="">
+                    <img class="ml-4 h-8 w-8 m-2" src="{{url_for('static',filename='arrow-left.svg')}}" alt="">
                 </a>
                 <p class="text-xl font-semibold font-mont">New Expense</p>
-                <button type="submit" class="mr-2 text-lg">
-                    <p class="font-semibold">ADD</p>
-                </button>
             </header>
 
             <div class="w-[90%] lg:w-[35%] mx-auto my-6 bg-white p-6 rounded-lg shadow-md flex flex-col">
@@ -27,13 +26,13 @@
                 <!-- Description -->
                 <div class="mb-4">
                     <input type="text" id="description" name="description" placeholder="Description"
-                        class="w-full p-2 border border-gray-300 rounded-md placeholder-gray-400 focus:bg-gray-100 focus:outline-none focus:border-blue-400"
+                        class="w-full p-2 border border-gray-300 rounded-md placeholder-gray-400 focus:bg-gray-100 focus:outline-none focus:border-black"
                         required>
                 </div>
                 <!-- Amount -->
                 <div class="mb-4">
-                    <input type="number" id="amount" name="amount" placeholder="Amount" step="0.01"
-                        class="w-full p-2 border border-gray-300 rounded-md placeholder-gray-400 focus:bg-gray-100 focus:outline-none focus:border-blue-400"
+                    <input type="number" id="amount" name="amount" placeholder="Amount in INR" step="0.01"
+                        class="w-full p-2 border border-gray-300 rounded-md placeholder-gray-400 focus:bg-gray-100 focus:outline-none focus:border-black"
                         required>
                 </div>
 
@@ -41,7 +40,7 @@
                 <!-- Paid By dropdown -->
                 <div class="relative w-full mr-2">
                     <button type="button" id="paidByBtn"
-                        class="w-full text-center p-2 border border-gray-500 rounded-md placeholder-gray-400 focus:bg-gray-100 focus:outline-none focus:border-blue-400">
+                        class="w-full text-center p-2 border border-gray-500 rounded-md placeholder-gray-400 focus:bg-gray-100 focus:outline-none focus:border-black">
                         Paid By
                     </button>
                     <div id="paidByDropdown"
@@ -60,14 +59,14 @@
                     <!-- Paid For dropdown -->
                     <div class="mb-4 relative w-full mr-2">
                         <button type="button" id="paidForBtn"
-                            class="w-full text-center p-2 border border-gray-500 rounded-md focus:bg-gray-100 placeholder-gray-400 focus:outline-none focus:border-blue-400">
+                            class="w-full text-center p-2 border border-gray-500 rounded-md focus:bg-gray-100 placeholder-gray-400 focus:outline-none focus:border-black">
                             Paid For
                         </button>
                         <div id="paidForDropdown"
                             class="dropdown-menu absolute z-10 bg-white w-full border border-gray-300 rounded-md shadow-md mt-1 hidden">
                             {% for member in members %}
                                 <div class="inputs p-2 flex hover:bg-gray-200 active:bg-slate-200">
-                                    <input type="checkbox" name="paid_for[]" id="f{{member.uid}}" value="{{member.uid}}" class="mr-2">
+                                    <input type="checkbox" name="paid_for[]" id="f{{member.uid}}" value="{{member.uid}}" class="mr-2 cc">
                                     <label for="f{{member.uid}}" class="block p-2 w-full">{{member.username}}</label>
                                 </div>
                             {% endfor %}
@@ -82,10 +81,19 @@
                     <div class="flex justify-between items-center mb-2">
                         <label for="ind{{i.uid}}" class="font-medium">{{i.username}}</label>
                         <input type="number" id="ind{{i.uid}}" name="ind{{i.uid}}" placeholder="0.00" value="0" step="0.01"
-                            class="w-[50%] p-2 border border-gray-300 rounded-md placeholder-gray-400 focus:bg-gray-100 focus:outline-none focus:border-blue-400">
+                            class="w-[50%] p-2 border border-gray-300 rounded-md placeholder-gray-400 focus:bg-gray-100 focus:outline-none focus:border-black">
                     </div>
                 {% endfor %}
             </div>
+            <div class="flex justify-center">
+                <button type="submit" class="flex justify-center items-center px-4 py-2 bg-black hover:bg-gray-600 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-75">
+                    <span class="mr-2 text-lg">ADD</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
+                </button>
+            </div>
+            
         </form>
     </div>
 
