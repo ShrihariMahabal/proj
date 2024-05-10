@@ -6,27 +6,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Friend</title>
     <link href="{{url_for('static',filename='css/output.css')}}" rel="stylesheet">
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
 </head>
 
-<body>
-    <!-- <div class="backdrop hidden fixed bg-[rgba(0,0,0,0.5)] top-0 h-[100vh] w-full z-10"></div> -->
-    <div class="container h-[100vh] w-full flex justify-center items-center">
-        <div class="modal fixed z-10 flex flex-col justify-between items-center font-['Poppins',sans-serif] bg-white rounded-xl px-5 py-8 shadow-2xl">
-            <h1 class="font-bold text-2xl mt-3 mb-5">ADD FRIEND</h1>
-            <form action="{{url_for('add_friend')}}" method="post" class="flex flex-col w-[20rem]">
-                <label class="my-1" for="add_friend">Enter Email Below:</label>
-                <input class="text-black rounded-lg bg-slate-100 mb-4 pl-2 py-[1px] border-[1px] border-slate-500"
-                    type="email" id="" name="friend_email" placeholder="johndoe@gmail.com">
-                {% if error %}
-                <p class="text-[red]">{{error}}</p>
+<body class="bg-gray-300 flex justify-center items-center h-screen">
+    <div class="bg-gray-300 container mx-auto">
+        <div class="bg-white rounded-xl shadow-xl m-8 p-8 pb-6 max-w-lg">
+            <h1 class="text-3xl font-bold text-center mb-8">ADD A FRIEND</h1>
+            <form action="{{url_for('add_friend')}}" method="post" class="space-y-4">
+                <div class="flex flex-col space-y-2">
+                    <label for="add_friend" class="text-lg font-semibold">Enter Friend's Email</label>
+                    <input type="email" id="add_friend" name="friend_email" placeholder="johndoe@gmail.com"
+                        class="border-b-2 border-purple-500 bg-transparent focus:outline-none focus:border-purple-700 text-lg py-2">
+                </div>
+                {% if error or error2 %}
+                <p class="text-red-500 text-center">{{error or error2}}</p>
                 {% endif %}
-                {% if error2 %}
-                <p class="text-[red]">{{error2}}</p>
-                {% endif %}
-                <button type="submit" class="btn-primary my-3">
-                    <p class="font-semibold">+ Add Friend</p>
-                </button>
-                <a class="btn-secondary" href="{{url_for('friends')}}">Cancel</a>
+                <div class=" mt-2 flex justify-center">
+                    <button type="submit"
+                        class="bg-purple-700 hover:bg-purple-800 text-white font-semibold py-2 px-6 rounded-lg transition duration-300 ease-in-out transform hover:scale-105">+ Add
+                        Friend</button>
+                </div>
+                <div class="flex justify-center">
+                    <a href="{{url_for('friends')}}"
+                        class="text-md text-purple-700 hover:underline hover:text-black">Cancel</a>
+                </div>
             </form>
         </div>
     </div>
