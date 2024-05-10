@@ -27,9 +27,9 @@
             <p class="text-xl">Amount You are Owed: Rs.{{amt_owed}}</p>
             <p class="text-xl">Amount You Owe: Rs.{{amt_owes}}</p>
             {% if amt_owed>amt_owes %}
-            <p class="text-xl">Overall You are Owed Amount: Rs.{{amt_owed-amt_owes}}</p>
+            <p class="text-xl">Overall You are Owed Amount: Rs.{{ "%0.2f" | format(amt_owed-amt_owes) }}</p>
             {% elif amt_owes>amt_owed %}
-            <p class="text-xl">Overall You Owe Amount: Rs.{{amt_owes-amt_owed}}</p>
+            <p class="text-xl">Overall You Owe Amount: Rs.{{"%0.2f" | format(amt_owes-amt_owed) }}</p>
             {% else %}
             <p class="text-xl">All Balances Settled</p>
             {% endif%}

@@ -490,7 +490,7 @@ def friend_settle(friend_id):
         elif list[idx]['payer']==friend_id and list[idx]['fid']==user:
             amt_owes+=list[idx]['amt'] 
 
-    return render_template('friend_settle.html',amt_owed=amt_owed,amt_owes=amt_owes,name=name,list=list, list_gid=list_gid,user=user, friend_id=friend_id)
+    return render_template('friend_settle.html',amt_owed=round(amt_owed,2),amt_owes=round(amt_owes,2),name=name,list=list, list_gid=list_gid,user=user, friend_id=friend_id)
 
 @app.route('/account')
 def account():
@@ -509,7 +509,7 @@ def account():
         if owe[idx]['fid']==session['uid'] and not owe[idx]['payer']==session['uid']:
             amt_owes+=owe[idx]['amt']
 
-    return render_template('account.html', user=user,amt_owes=amt_owes,amt_owed=amt_owed)
+    return render_template('account.html', user=user,amt_owes=round(amt_owes,2),amt_owed=round(amt_owed,2))
 
 @app.route('/edit_username', methods=['GET','POST'])
 def edit_username():
@@ -571,7 +571,7 @@ def dashboard():
             amt_owed+=owe[idx]['amt'] 
         if owe[idx]['fid']==session['uid'] and not owe[idx]['payer']==session['uid']:
             amt_owes+=owe[idx]['amt']
-    return render_template('dashboard.html', amt_owed=amt_owed, amt_owes=amt_owes, paid=paid)
+    return render_template('dashboard.html', amt_owed=round(amt_owed,2), amt_owes=round(amt_owes,2), paid=paid)
 
 @app.route('/payment_chart/<int:gid>')
 def payment_chart(gid):
