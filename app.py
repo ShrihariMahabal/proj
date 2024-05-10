@@ -501,7 +501,6 @@ def friend_settle(friend_id):
 
     cur.execute("SELECT payer,fid,paid_for.amt,paid_by.gid,groups.group_name,description FROM paid_by JOIN paid_for JOIN groups ON paid_by.eid=paid_for.eid AND paid_by.gid=groups.gid WHERE (payer=%s AND fid=%s) OR (payer=%s AND fid=%s)", (friend_id,user,user,friend_id))
     list=cur.fetchall()
-    cur.close()
     
     for idx,i in enumerate(list):
         list_gid[list[idx]['gid']]=list[idx]['group_name']
@@ -509,6 +508,16 @@ def friend_settle(friend_id):
             amt_owed+=list[idx]['amt']
         elif list[idx]['payer']==friend_id and list[idx]['fid']==user:
             amt_owes+=list[idx]['amt'] 
+    
+    cur.execute("SELECT * FROM settled WHERE uid=%s AND fid=%s", (user, friend_id, ))
+    paid = cur.fetchall()
+    cur.execute("SELECT * FROM settled WHERE uid=%s AND fid=%s", (friend_id, user, ))
+    taken = cur.fetchall()
+    cur.close()
+    for i in paid:
+        amt_owes -= i['amount']
+    for i in taken:
+        amt_owed -= i['amount']
 
     return render_template('friend_settle.html',amt_owed=round(amt_owed,2),amt_owes=round(amt_owes,2),name=name,list=list, list_gid=list_gid,user=user, friend_id=friend_id)
 

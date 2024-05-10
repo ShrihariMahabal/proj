@@ -12,10 +12,10 @@
 <body class="bg-gray-200">
     <div class="container mx-auto">
         <!-- Header -->
-        <header class="bg-purple-700 text-white py-4">
-            <div class="flex items-center">
+        <header class="bg-purple-700 text-white py-2">
+            <div class="flex space-x-[3.3rem] items-center">
                 <a href="{{url_for('friends')}}">
-                    <img class="ml-1 h-8 w-8 mr-2" src="{{url_for('static',filename='arrow-left.svg')}}" alt="">
+                    <img class="ml-1 h-8 w-8 mr-2" src="{{url_for('static',filename='arrow-left-white.svg')}}" alt="">
                 </a>
                 <p class="text-2xl font-semibold font-mont">Settle with friends</p>
             </div>
@@ -49,17 +49,17 @@
                 <h2 class="px-4 text-2xl mb-4 font-bold">Group Name: <span class="text-purple-700">{{ list_gid[i] }}</span></h2>
                 {% for entry in list %}
                 {% if entry.gid == i %}
-                <div class="flex items-center mb-3 px-4 py-4 shadow-xl">
+                <div class="flex items-center mb-3 px-4 py-4 shadow-xl bg-gray-100">
                     <div class="bg-purple-700 rounded-full h-12 w-12 flex justify-center items-center">
                         <p class="text-xl font-medium text-white">{{ name['username'][0].title() }}</p>
                     </div>
-                    <p class="text-lg ml-4">
+                    <p class="text-lg ml-4 truncate">
                         {% if entry.payer==user and entry.fid==friend_id %}
-                        <span class="px-2 bg-green-500 text-white rounded-full">owes you</span>
-                        <span class="font-semibold">Rs.{{ entry.amt }}</span>
+                        <span class="px-2 bg-green-500 text-white rounded-full py-1">owes you</span>
+                        <span class="font-semibold">Rs.{{ entry.amt|round(2) }}</span>
                         <span class="font-semibold">for {{ entry.description }}</span>
                         {% elif entry.payer==friend_id and entry.fid==user %}
-                        <span class="px-2 bg-green-500 text-white rounded-full">you owe</span>
+                        <span class="px-2 bg-red-500 text-white rounded-full py-1">you owe</span>
                         <span class="font-semibold">Rs.{{ "%0.2f" | format(entry.amt) }}</span>
                         <span class="font-semibold">for {{ entry.description }}</span>
                         {% endif %}
