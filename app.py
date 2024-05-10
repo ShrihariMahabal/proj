@@ -621,6 +621,6 @@ def payment_chart(gid):
     return render_template('payment_chart.html',chart_data=chart_data,group_name=group_name,gid=gid,total_payment=total_payment,invite_code=invite_code)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host="192.168.0.164")
 
 # host="192.168.0.164"
