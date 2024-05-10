@@ -43,10 +43,19 @@
             </div>
         </div>
 
-        {% include 'nav.html' %}
         <a href="{{url_for('create_group')}}" class="bg-purple-700 rounded-full p-4 flex justify-center items-center absolute bottom-20 right-5">
             <img src="static/plus.svg" alt="Add Group">
         </a>
+        {% include 'nav.html' %}
+        <script>
+            navButtons = document.querySelectorAll('.nav-btn');
+            homebtn=document.getElementById("home");
+            console.log("hi");
+            navButtons.forEach(btn => {
+                btn.classList.remove('active');
+            });
+            homebtn.classList.add('active');
+        </script>
     </div>
 </body>
 
