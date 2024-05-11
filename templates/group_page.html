@@ -58,7 +58,7 @@
                     <div class="flex flex-col space-y-2 lg:grid lg:grid-cols-2 lg:gap-4">
                         {% for i in range(expenses|length) %}
                         <a href="{{url_for('exp', gid=gid, eid=expenses[i].eid)}}"
-                            class="flex flex-col items-center justify-between p-5 space-y-2 bg-white shadow-md rounded-xl w-full hover:bg-gray-300 active:bg-gray-300">
+                            class="flex flex-col items-center justify-between p-5 space-y-2 bg-white shadow-md rounded-xl w-full active:bg-gray-300">
                             <div class="flex items-center justify-between w-full">
                                 <div class="flex items-center">
                                     <i class="fas fa-solid fa-receipt fa-2xl"></i>
