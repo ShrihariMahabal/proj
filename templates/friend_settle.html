@@ -54,7 +54,7 @@
                     <div class="bg-purple-700 rounded-full h-12 w-12 flex justify-center items-center">
                         <p class="text-xl font-medium text-white">{{ name['username'][0].title() }}</p>
                     </div>
-                    <p class="text-lg ml-4 truncate">
+                    <p class="text-lg ml-4">
                         {% if entry.payer==user and entry.fid==friend_id %}
                         <span class="px-2 bg-green-500 text-white rounded-full py-1">owes you</span>
                         <span class="font-semibold">Rs.{{ entry.amt|round(2) }}</span>
